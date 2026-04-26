@@ -4,7 +4,8 @@ const ASSETS = [
   '/index.html',
   '/styles.css',
   '/script.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/logoapp.png'
 ];
 
 self.addEventListener('install', e => {
@@ -24,14 +25,20 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Ignora le richieste in POST, estensioni chrome ecc..
   if (e.request.method !== 'GET') return;
+  
+  // Ignora completamente le richieste a Supabase: network only per il db
   if (e.request.url.includes('supabase.co')) {
     e.respondWith(fetch(e.request));
     return;
   }
+  
+  // Cache First per gli asset statici (HTML, CSS, JS, immagini)
   e.respondWith(
     caches.match(e.request).then(cached => {
       return cached || fetch(e.request).then(response => {
+        // Opzionale: aggiungi alla cache se file validi
         return caches.open(CACHE_NAME).then(cache => {
           cache.put(e.request, response.clone());
           return response;

@@ -10,40 +10,26 @@ const state = {cars:[], clients:[], deadlines:[], docs:[], settings:{}, editingC
 
 function persistTheme(){ localStorage.setItem('abg_theme', document.documentElement.dataset.theme); }
 
-// Caricamento Dati
 async function hydrate(){
   try{
     const rawTheme=localStorage.getItem('abg_theme'); 
     if(rawTheme) document.documentElement.dataset.theme=rawTheme;
     
-    // Recupero dati da Supabase tabella univoca config
-    const { data, error } = await supabase.from('config').select('data').eq('id', 1).single();
-    if(data && data.data){
-       const d = data.data;
-       state.cars = d.cars || [];
-       state.clients = d.clients || [];
-       state.deadlines = d.deadlines || [];
-       state.docs = d.docs || [];
-       state.settings = d.settings || {};
-    }
+    const [c, cl, de, d, se] = await Promise.all([
+      supabase.from('cars').select('*'),
+      supabase.from('clients').select('*'),
+      supabase.from('deadlines').select('*'),
+      supabase.from('docs').select('*'),
+      supabase.from('settings').select('*').eq('id', '1').single()
+    ]);
+    
+    if (c.data) state.cars = c.data;
+    if (cl.data) state.clients = cl.data;
+    if (de.data) state.deadlines = de.data;
+    if (d.data) state.docs = d.data;
+    if (se.data) state.settings = se.data;
+
   }catch(e){ console.error("Errore download Supabase:", e); }
-}
-
-// Salvataggio Cloud
-let debounceTimer;
-async function saveToCloud() {
-  state.settings = collectSettings();
-  const payload = {
-     id: 1,
-     data: { cars: state.cars, clients: state.clients, deadlines: state.deadlines, docs: state.docs, settings: state.settings },
-     updated_at: new Date().toISOString()
-  };
-  await supabase.from('config').upsert(payload);
-}
-
-function persist() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(saveToCloud, 1200);
 }
 
 function collectSettings(){return {capitaleIniziale:Number($('capitaleIniziale').value||0),speseCommercialista:Number($('speseCommercialista').value||0),dataApertura:$('dataApertura').value,partitaIva:$('partitaIva').value.trim(),ragioneSociale:$('ragioneSociale').value.trim(),ateco:$('ateco').value.trim(),email:$('email').value.trim(),pec:$('pec').value.trim(),telefono:$('telefono').value.trim(),coeff:Number($('coeff').value||40),aliquotaImposta:Number($('aliquotaImposta').value||15),tipoInps:$('tipoInps').value,riduzione35:$('riduzione35').value==='si',noteAttivita:$('noteAttivita').value.trim()};}
@@ -61,7 +47,6 @@ function readAsDataURL(file){return new Promise((resolve,reject)=>{const fr=new 
 async function onCoverChange(e){const file=e.target.files[0]; if(!file){state.pendingCover=''; return;} state.pendingCover=await readAsDataURL(file);}
 function resetCarForm(){state.editingCar=null; state.pendingCover=''; $('coverUpload').value=''; ['carName','carPlate','buyDate','sellDate','carNotes'].forEach(id=>$(id).value=''); ['buyPrice','sellPrice','targetPrice','minPrice','passaggio','riparazioni','carburante','altroCosto'].forEach(id=>$(id).value='0'); ['carStatus','carSource','saleChannel'].forEach(id=>$(id).selectedIndex=0); $('clientLink').value=''; $('saveCar').textContent='Salva auto';}
 function closeSaleQuick(){ $('carStatus').value='Venduta'; if(!$('sellDate').value) $('sellDate').value = new Date().toISOString().slice(0,10); }
-
 function collectCar(){return {id:state.editingCar||uid(),name:$('carName').value.trim()||'Auto senza nome',plate:$('carPlate').value.trim(),status:$('carStatus').value,source:$('carSource').value,buyDate:$('buyDate').value,sellDate:$('sellDate').value,buyPrice:Number($('buyPrice').value||0),sellPrice:Number($('sellPrice').value||0),targetPrice:Number($('targetPrice').value||0),minPrice:Number($('minPrice').value||0),passaggio:Number($('passaggio').value||0),riparazioni:Number($('riparazioni').value||0),carburante:Number($('carburante').value||0),altroCosto:Number($('altroCosto').value||0),saleChannel:$('saleChannel').value,clientId:$('clientLink').value,notes:$('carNotes').value.trim(),cover:state.pendingCover||((state.cars.find(x=>x.id===state.editingCar)||{}).cover||''),updatedAt:new Date().toLocaleString('it-IT')};}
 
 function saveCar(){
@@ -69,18 +54,21 @@ function saveCar(){
   const idx=state.cars.findIndex(c=>c.id===car.id); 
   if(idx>=0){const prev=state.cars[idx]; car.history=[...(prev.history||[]),snap]; state.cars[idx]=car;} 
   else {car.history=[snap]; state.cars.unshift(car);} 
-  renderAll(); persist(); resetCarForm();
+  supabase.from('cars').upsert(car);
+  renderAll(); resetCarForm();
 }
 function editCar(id){const c=state.cars.find(x=>x.id===id); if(!c) return; state.editingCar=id; state.pendingCover=c.cover||''; $('carName').value=c.name||''; $('carPlate').value=c.plate||''; $('carStatus').value=c.status||'Da visionare'; $('carSource').value=c.source||'Privato'; $('buyDate').value=c.buyDate||''; $('sellDate').value=c.sellDate||''; $('buyPrice').value=c.buyPrice||0; $('sellPrice').value=c.sellPrice||0; $('targetPrice').value=c.targetPrice||0; $('minPrice').value=c.minPrice||0; $('passaggio').value=c.passaggio||0; $('riparazioni').value=c.riparazioni||0; $('carburante').value=c.carburante||0; $('altroCosto').value=c.altroCosto||0; $('saleChannel').value=c.saleChannel||'Subito'; $('clientLink').value=c.clientId||''; $('carNotes').value=c.notes||''; $('saveCar').textContent='Aggiorna auto'; openPanel('autoPanel');}
 function duplicateCar(id){
   const c=state.cars.find(x=>x.id===id); if(!c) return; 
   const copy={...c,id:uid(),plate:'',status:'Da visionare',sellDate:'',sellPrice:0,history:[]}; 
   state.cars.unshift(copy); 
-  renderAll(); persist();
+  supabase.from('cars').insert(copy);
+  renderAll();
 }
 function deleteCar(id){
   state.cars=state.cars.filter(c=>c.id!==id); 
-  renderAll(); persist();
+  supabase.from('cars').delete().eq('id', id);
+  renderAll();
 }
 
 function resetClientForm(){state.editingClient=null; ['clientName','clientPhone','clientEmail','clientInterest','clientFollow','clientNotes'].forEach(id=>$(id).value=''); $('clientBudget').value='0'; ['clientStatus','clientSource'].forEach(id=>$(id).selectedIndex=0); $('saveClient').textContent='Salva cliente';}
@@ -89,14 +77,17 @@ function collectClient(){return {id:state.editingClient||uid(),name:$('clientNam
 function saveClient(){
   const item=collectClient(); const idx=state.clients.findIndex(c=>c.id===item.id); 
   if(idx>=0) state.clients[idx]=item; else state.clients.unshift(item); 
-  renderAll(); persist(); resetClientForm();
+  supabase.from('clients').upsert(item);
+  renderAll(); resetClientForm();
 }
 function editClient(id){const c=state.clients.find(x=>x.id===id); if(!c) return; state.editingClient=id; $('clientName').value=c.name||''; $('clientPhone').value=c.phone||''; $('clientEmail').value=c.email||''; $('clientBudget').value=c.budget||0; $('clientInterest').value=c.interest||''; $('clientStatus').value=c.status||'Nuovo'; $('clientFollow').value=c.follow||''; $('clientSource').value=c.source||'Subito'; $('clientNotes').value=c.notes||''; $('saveClient').textContent='Aggiorna cliente'; openPanel('clientsPanel');}
 function deleteClient(id){
   const affected = state.cars.filter(c => c.clientId === id);
   state.clients=state.clients.filter(c=>c.id!==id); 
   state.cars=state.cars.map(c=>c.clientId===id?{...c,clientId:''}:c); 
-  renderAll(); persist();
+  supabase.from('clients').delete().eq('id', id);
+  affected.forEach(c => supabase.from('cars').upsert({...c, clientId:''}));
+  renderAll();
 }
 
 function resetDeadlineForm(){state.editingDeadline=null; ['deadlineTitle','deadlineDate','deadlineLink','deadlineNotes'].forEach(id=>$(id).value=''); ['deadlineCategory','deadlinePriority','deadlineStatus'].forEach(id=>$(id).selectedIndex=0); $('saveDeadline').textContent='Salva scadenza';}
@@ -105,16 +96,20 @@ function collectDeadline(){return {id:state.editingDeadline||uid(),title:$('dead
 function saveDeadline(){
   const item=collectDeadline(); const idx=state.deadlines.findIndex(d=>d.id===item.id); 
   if(idx>=0) state.deadlines[idx]=item; else state.deadlines.unshift(item); 
-  renderAll(); persist(); resetDeadlineForm();
+  supabase.from('deadlines').upsert(item);
+  renderAll(); resetDeadlineForm();
 }
 function editDeadline(id){const d=state.deadlines.find(x=>x.id===id); if(!d) return; state.editingDeadline=id; $('deadlineTitle').value=d.title||''; $('deadlineDate').value=d.date||''; $('deadlineCategory').value=d.category||'Fiscale'; $('deadlinePriority').value=d.priority||'Alta'; $('deadlineStatus').value=d.status||'Aperta'; $('deadlineLink').value=d.link||''; $('deadlineNotes').value=d.notes||''; $('saveDeadline').textContent='Aggiorna scadenza'; openPanel('deadlinesPanel');}
 function deleteDeadline(id){
   state.deadlines=state.deadlines.filter(d=>d.id!==id); 
-  renderAll(); persist();
+  supabase.from('deadlines').delete().eq('id', id);
+  renderAll();
 }
 function toggleDeadlineDone(id){
   state.deadlines=state.deadlines.map(d=>d.id===id?{...d,status:d.status==='Fatta'?'Aperta':'Fatta'}:d); 
-  renderAll(); persist();
+  const updated = state.deadlines.find(d=>d.id===id);
+  if(updated) supabase.from('deadlines').upsert(updated);
+  renderAll();
 }
 
 async function handleDocs(files){
@@ -127,14 +122,16 @@ async function handleDocs(files){
     } 
     const doc = {id:uid(),name:f.name,tag,docType:type,size:f.size,preview,image,createdAt:new Date().toLocaleString('it-IT')};
     state.docs.unshift(doc);
+    supabase.from('docs').upsert(doc);
   } 
   $('docUpload').value=''; $('docTag').value=''; 
-  renderAll(); persist();
+  renderAll();
 }
 function clearDocs(){
   if(confirm('Vuoi svuotare tutto l\'archivio documenti?')){
     state.docs=[]; 
-    renderAll(); persist();
+    supabase.from('docs').delete().neq('id', 'dummy');
+    renderAll();
   }
 }
 
@@ -144,7 +141,8 @@ function closeCarSale(id){
   c.status='Venduta'; if(!c.sellDate) c.sellDate=new Date().toISOString().slice(0,10); 
   c.updatedAt=new Date().toLocaleString('it-IT'); 
   c.history=[...(c.history||[]), {...c, snapshotAt:new Date().toLocaleString('it-IT')}]; 
-  renderAll(); persist();
+  supabase.from('cars').upsert(c);
+  renderAll();
 }
 window.editCar=editCar; window.duplicateCar=duplicateCar; window.deleteCar=deleteCar; window.closeCarSale=closeCarSale;
 
@@ -180,10 +178,7 @@ function askAi(){const q=$('aiQuestion').value.trim().toLowerCase(); if(!q){$('a
 function copyPrompt(){const m=metrics(); const txt=`Sei un assistente per una rivendita auto. Analizza questi dati e rispondi in italiano semplice. Ricavi ${m.ricavi}, costi reali ${m.costiReal}, reddito forfettario ${m.redditoForf}, INPS ${m.inps}, imposta ${m.imposta}, capitale riutilizzabile ${m.capitale}. Auto: ${state.cars.map(c=>`${c.name} margine ${carMargin(c)} stato ${c.status}`).join(' | ')||'nessuna'}. Clienti: ${state.clients.map(c=>`${c.name} stato ${c.status} follow ${c.follow||'-'}`).join(' | ')||'nessuno'}. Scadenze: ${state.deadlines.map(d=>`${d.title} ${d.date||'-'} ${d.status}`).join(' | ')||'nessuna'}. Documenti: ${state.docs.map(d=>`${d.name} ${d.preview||''}`).join(' | ')||'nessuno'}. Domanda: ${$('aiQuestion').value.trim()||'Riassumi situazione e priorità.'}`; navigator.clipboard.writeText(txt); $('aiAnswer').textContent='Prompt avanzato copiato. Puoi usarlo in un assistente esterno quando vuoi un parere più articolato.'; }
 function toCsv(rows){if(!rows.length) return ''; const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))]; return [keys.join(','), ...rows.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');}
 function downloadFile(name,content,type='text/plain'){const blob=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);}
-
-// L'esportazione prende tutto lo stato come prima, per salvataggio backup locale
 function exportJson(){downloadFile('AutoBroskiGroupV5-backup.json', JSON.stringify({cars:state.cars,clients:state.clients,deadlines:state.deadlines,docs:state.docs,settings:collectSettings()},null,2), 'application/json');}
-
 function importJsonFile(file){
   const fr=new FileReader(); 
   fr.onload=async ()=>{
@@ -197,29 +192,46 @@ function importJsonFile(file){
       fillSettings(); 
       renderAll(); 
       
-      await saveToCloud();
+      if(state.cars.length) await supabase.from('cars').upsert(state.cars);
+      if(state.clients.length) await supabase.from('clients').upsert(state.clients);
+      if(state.deadlines.length) await supabase.from('deadlines').upsert(state.deadlines);
+      if(state.docs.length) await supabase.from('docs').upsert(state.docs);
+      await supabase.from('settings').upsert({id: '1', ...state.settings});
       
-      alert('Backup importato e sincronizzato sul cloud (Tabella Config).');
+      alert('Backup importato e sincronizzato in Cloud.');
     }catch(e){alert('JSON non valido.');}
   }; 
   fr.readAsText(file);
 }
-
 function exportCarsCsv(){downloadFile('AutoBroskiGroupV5-auto.csv', toCsv(state.cars.map(c=>({...c, totalCosts:totalCarCosts(c), margin:carMargin(c), daysInStock:daysInStock(c)}))), 'text/csv');}
 function exportClientsCsv(){downloadFile('AutoBroskiGroupV5-clienti.csv', toCsv(state.clients), 'text/csv');}
-
 async function wipeAll(){
   if(confirm('Vuoi cancellare tutti i dati SIA IN LOCALE CHE NEL CLOUD?')){
     localStorage.removeItem('abg_theme'); 
-    localStorage.removeItem('abg_v5'); // nel caso fosse rimasto prima
-    state.cars = []; state.clients = []; state.deadlines = []; state.docs = []; state.settings = {};
-    await saveToCloud();
+    localStorage.removeItem('abg_v5');
+    await Promise.all([
+      supabase.from('cars').delete().neq('id', 'dummy'),
+      supabase.from('clients').delete().neq('id', 'dummy'),
+      supabase.from('deadlines').delete().neq('id', 'dummy'),
+      supabase.from('docs').delete().neq('id', 'dummy'),
+      supabase.from('settings').delete().eq('id', '1')
+    ]);
     location.reload();
   }
 }
 
+let debounceSettingsTimer;
+function persistSettings() {
+  clearTimeout(debounceSettingsTimer);
+  debounceSettingsTimer = setTimeout(() => {
+    const s = collectSettings();
+    supabase.from('settings').upsert({id: '1', ...s});
+  }, 1200);
+}
+
 function renderAll(){
   setOptionsClients(); renderHome(); renderToday(); renderCars(); renderClients(); renderDeadlines(); renderDocs(); renderOrdinary(); renderSimulator(); 
+  persistSettings();
 }
 
 $('openDrawer').addEventListener('click', ()=>openPanel('dashboardPanel')); $('closeDrawer').addEventListener('click', ()=>$('drawer').classList.remove('open'));
@@ -232,12 +244,9 @@ $('saveDeadline').addEventListener('click', saveDeadline); $('resetDeadline').ad
 $('docUpload').addEventListener('change', e=>handleDocs(e.target.files)); $('clearDocs').addEventListener('click', clearDocs);
 $('askAi').addEventListener('click', askAi); $('copyPrompt').addEventListener('click', copyPrompt);
 $('exportJson').addEventListener('click', exportJson); $('importJsonBtn').addEventListener('click', ()=>$('importJson').click()); $('importJson').addEventListener('change', e=>e.target.files[0]&&importJsonFile(e.target.files[0])); $('exportCarsCsv').addEventListener('click', exportCarsCsv); $('exportClientsCsv').addEventListener('click', exportClientsCsv); $('wipeAll').addEventListener('click', wipeAll);
-
 ['simBuy','simSell','simPass','simRep','simExtra','simDays'].forEach(id=>$(id).addEventListener('input', renderSimulator)); ['ordVatSales','ordVatCosts','ordDeductExtra','ordIrpefRate'].forEach(id=>$(id)&&$(id).addEventListener('input', renderOrdinary));
+document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', renderAll));
 
-document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', persist));
-
-// INIT ASINCRONO
 (async function init() {
   updateThemeThumb();
   await hydrate();
