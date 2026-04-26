@@ -10,27 +10,40 @@ const state = {cars:[], clients:[], deadlines:[], docs:[], settings:{}, editingC
 
 function persistTheme(){ localStorage.setItem('abg_theme', document.documentElement.dataset.theme); }
 
+// Caricamento Dati
 async function hydrate(){
   try{
     const rawTheme=localStorage.getItem('abg_theme'); 
     if(rawTheme) document.documentElement.dataset.theme=rawTheme;
     
-    // Recupero dati da Supabase per logica Multi-Tabella
-    const [c, cl, de, d, se] = await Promise.all([
-      supabase.from('cars').select('*'),
-      supabase.from('clients').select('*'),
-      supabase.from('deadlines').select('*'),
-      supabase.from('docs').select('*'),
-      supabase.from('settings').select('*').eq('id', '1').single()
-    ]);
-    
-    if (c.data) state.cars = c.data;
-    if (cl.data) state.clients = cl.data;
-    if (de.data) state.deadlines = de.data;
-    if (d.data) state.docs = d.data;
-    if (se.data) state.settings = se.data;
-
+    // Recupero dati da Supabase tabella univoca config
+    const { data, error } = await supabase.from('config').select('data').eq('id', 1).single();
+    if(data && data.data){
+       const d = data.data;
+       state.cars = d.cars || [];
+       state.clients = d.clients || [];
+       state.deadlines = d.deadlines || [];
+       state.docs = d.docs || [];
+       state.settings = d.settings || {};
+    }
   }catch(e){ console.error("Errore download Supabase:", e); }
+}
+
+// Salvataggio Cloud
+let debounceTimer;
+async function saveToCloud() {
+  state.settings = collectSettings();
+  const payload = {
+     id: 1,
+     data: { cars: state.cars, clients: state.clients, deadlines: state.deadlines, docs: state.docs, settings: state.settings },
+     updated_at: new Date().toISOString()
+  };
+  await supabase.from('config').upsert(payload);
+}
+
+function persist() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(saveToCloud, 1200);
 }
 
 function collectSettings(){return {capitaleIniziale:Number($('capitaleIniziale').value||0),speseCommercialista:Number($('speseCommercialista').value||0),dataApertura:$('dataApertura').value,partitaIva:$('partitaIva').value.trim(),ragioneSociale:$('ragioneSociale').value.trim(),ateco:$('ateco').value.trim(),email:$('email').value.trim(),pec:$('pec').value.trim(),telefono:$('telefono').value.trim(),coeff:Number($('coeff').value||40),aliquotaImposta:Number($('aliquotaImposta').value||15),tipoInps:$('tipoInps').value,riduzione35:$('riduzione35').value==='si',noteAttivita:$('noteAttivita').value.trim()};}
@@ -56,21 +69,18 @@ function saveCar(){
   const idx=state.cars.findIndex(c=>c.id===car.id); 
   if(idx>=0){const prev=state.cars[idx]; car.history=[...(prev.history||[]),snap]; state.cars[idx]=car;} 
   else {car.history=[snap]; state.cars.unshift(car);} 
-  supabase.from('cars').upsert(car);
-  renderAll(); resetCarForm();
+  renderAll(); persist(); resetCarForm();
 }
 function editCar(id){const c=state.cars.find(x=>x.id===id); if(!c) return; state.editingCar=id; state.pendingCover=c.cover||''; $('carName').value=c.name||''; $('carPlate').value=c.plate||''; $('carStatus').value=c.status||'Da visionare'; $('carSource').value=c.source||'Privato'; $('buyDate').value=c.buyDate||''; $('sellDate').value=c.sellDate||''; $('buyPrice').value=c.buyPrice||0; $('sellPrice').value=c.sellPrice||0; $('targetPrice').value=c.targetPrice||0; $('minPrice').value=c.minPrice||0; $('passaggio').value=c.passaggio||0; $('riparazioni').value=c.riparazioni||0; $('carburante').value=c.carburante||0; $('altroCosto').value=c.altroCosto||0; $('saleChannel').value=c.saleChannel||'Subito'; $('clientLink').value=c.clientId||''; $('carNotes').value=c.notes||''; $('saveCar').textContent='Aggiorna auto'; openPanel('autoPanel');}
 function duplicateCar(id){
   const c=state.cars.find(x=>x.id===id); if(!c) return; 
   const copy={...c,id:uid(),plate:'',status:'Da visionare',sellDate:'',sellPrice:0,history:[]}; 
   state.cars.unshift(copy); 
-  supabase.from('cars').insert(copy);
-  renderAll();
+  renderAll(); persist();
 }
 function deleteCar(id){
   state.cars=state.cars.filter(c=>c.id!==id); 
-  supabase.from('cars').delete().eq('id', id);
-  renderAll();
+  renderAll(); persist();
 }
 
 function resetClientForm(){state.editingClient=null; ['clientName','clientPhone','clientEmail','clientInterest','clientFollow','clientNotes'].forEach(id=>$(id).value=''); $('clientBudget').value='0'; ['clientStatus','clientSource'].forEach(id=>$(id).selectedIndex=0); $('saveClient').textContent='Salva cliente';}
@@ -79,17 +89,14 @@ function collectClient(){return {id:state.editingClient||uid(),name:$('clientNam
 function saveClient(){
   const item=collectClient(); const idx=state.clients.findIndex(c=>c.id===item.id); 
   if(idx>=0) state.clients[idx]=item; else state.clients.unshift(item); 
-  supabase.from('clients').upsert(item);
-  renderAll(); resetClientForm();
+  renderAll(); persist(); resetClientForm();
 }
 function editClient(id){const c=state.clients.find(x=>x.id===id); if(!c) return; state.editingClient=id; $('clientName').value=c.name||''; $('clientPhone').value=c.phone||''; $('clientEmail').value=c.email||''; $('clientBudget').value=c.budget||0; $('clientInterest').value=c.interest||''; $('clientStatus').value=c.status||'Nuovo'; $('clientFollow').value=c.follow||''; $('clientSource').value=c.source||'Subito'; $('clientNotes').value=c.notes||''; $('saveClient').textContent='Aggiorna cliente'; openPanel('clientsPanel');}
 function deleteClient(id){
   const affected = state.cars.filter(c => c.clientId === id);
   state.clients=state.clients.filter(c=>c.id!==id); 
   state.cars=state.cars.map(c=>c.clientId===id?{...c,clientId:''}:c); 
-  supabase.from('clients').delete().eq('id', id);
-  affected.forEach(c => supabase.from('cars').upsert({...c, clientId:''}));
-  renderAll();
+  renderAll(); persist();
 }
 
 function resetDeadlineForm(){state.editingDeadline=null; ['deadlineTitle','deadlineDate','deadlineLink','deadlineNotes'].forEach(id=>$(id).value=''); ['deadlineCategory','deadlinePriority','deadlineStatus'].forEach(id=>$(id).selectedIndex=0); $('saveDeadline').textContent='Salva scadenza';}
@@ -98,20 +105,16 @@ function collectDeadline(){return {id:state.editingDeadline||uid(),title:$('dead
 function saveDeadline(){
   const item=collectDeadline(); const idx=state.deadlines.findIndex(d=>d.id===item.id); 
   if(idx>=0) state.deadlines[idx]=item; else state.deadlines.unshift(item); 
-  supabase.from('deadlines').upsert(item);
-  renderAll(); resetDeadlineForm();
+  renderAll(); persist(); resetDeadlineForm();
 }
 function editDeadline(id){const d=state.deadlines.find(x=>x.id===id); if(!d) return; state.editingDeadline=id; $('deadlineTitle').value=d.title||''; $('deadlineDate').value=d.date||''; $('deadlineCategory').value=d.category||'Fiscale'; $('deadlinePriority').value=d.priority||'Alta'; $('deadlineStatus').value=d.status||'Aperta'; $('deadlineLink').value=d.link||''; $('deadlineNotes').value=d.notes||''; $('saveDeadline').textContent='Aggiorna scadenza'; openPanel('deadlinesPanel');}
 function deleteDeadline(id){
   state.deadlines=state.deadlines.filter(d=>d.id!==id); 
-  supabase.from('deadlines').delete().eq('id', id);
-  renderAll();
+  renderAll(); persist();
 }
 function toggleDeadlineDone(id){
   state.deadlines=state.deadlines.map(d=>d.id===id?{...d,status:d.status==='Fatta'?'Aperta':'Fatta'}:d); 
-  const updated = state.deadlines.find(d=>d.id===id);
-  if(updated) supabase.from('deadlines').upsert(updated);
-  renderAll();
+  renderAll(); persist();
 }
 
 async function handleDocs(files){
@@ -124,16 +127,14 @@ async function handleDocs(files){
     } 
     const doc = {id:uid(),name:f.name,tag,docType:type,size:f.size,preview,image,createdAt:new Date().toLocaleString('it-IT')};
     state.docs.unshift(doc);
-    supabase.from('docs').upsert(doc);
   } 
   $('docUpload').value=''; $('docTag').value=''; 
-  renderAll();
+  renderAll(); persist();
 }
 function clearDocs(){
   if(confirm('Vuoi svuotare tutto l\'archivio documenti?')){
     state.docs=[]; 
-    supabase.from('docs').delete().neq('id', 'dummy');
-    renderAll();
+    renderAll(); persist();
   }
 }
 
@@ -143,8 +144,7 @@ function closeCarSale(id){
   c.status='Venduta'; if(!c.sellDate) c.sellDate=new Date().toISOString().slice(0,10); 
   c.updatedAt=new Date().toLocaleString('it-IT'); 
   c.history=[...(c.history||[]), {...c, snapshotAt:new Date().toLocaleString('it-IT')}]; 
-  supabase.from('cars').upsert(c);
-  renderAll();
+  renderAll(); persist();
 }
 window.editCar=editCar; window.duplicateCar=duplicateCar; window.deleteCar=deleteCar; window.closeCarSale=closeCarSale;
 
@@ -197,13 +197,9 @@ function importJsonFile(file){
       fillSettings(); 
       renderAll(); 
       
-      if(state.cars.length) await supabase.from('cars').upsert(state.cars);
-      if(state.clients.length) await supabase.from('clients').upsert(state.clients);
-      if(state.deadlines.length) await supabase.from('deadlines').upsert(state.deadlines);
-      if(state.docs.length) await supabase.from('docs').upsert(state.docs);
-      await supabase.from('settings').upsert({id: '1', ...state.settings});
+      await saveToCloud();
       
-      alert('Backup importato e sincronizzato sul cloud.');
+      alert('Backup importato e sincronizzato sul cloud (Tabella Config).');
     }catch(e){alert('JSON non valido.');}
   }; 
   fr.readAsText(file);
@@ -216,29 +212,14 @@ async function wipeAll(){
   if(confirm('Vuoi cancellare tutti i dati SIA IN LOCALE CHE NEL CLOUD?')){
     localStorage.removeItem('abg_theme'); 
     localStorage.removeItem('abg_v5'); // nel caso fosse rimasto prima
-    await Promise.all([
-      supabase.from('cars').delete().neq('id', 'dummy'),
-      supabase.from('clients').delete().neq('id', 'dummy'),
-      supabase.from('deadlines').delete().neq('id', 'dummy'),
-      supabase.from('docs').delete().neq('id', 'dummy'),
-      supabase.from('settings').delete().eq('id', '1')
-    ]);
+    state.cars = []; state.clients = []; state.deadlines = []; state.docs = []; state.settings = {};
+    await saveToCloud();
     location.reload();
   }
 }
 
-let debounceSettingsTimer;
-function persistSettings() {
-  clearTimeout(debounceSettingsTimer);
-  debounceSettingsTimer = setTimeout(() => {
-    const s = collectSettings();
-    supabase.from('settings').upsert({id: '1', ...s});
-  }, 1200);
-}
-
 function renderAll(){
   setOptionsClients(); renderHome(); renderToday(); renderCars(); renderClients(); renderDeadlines(); renderDocs(); renderOrdinary(); renderSimulator(); 
-  persistSettings();
 }
 
 $('openDrawer').addEventListener('click', ()=>openPanel('dashboardPanel')); $('closeDrawer').addEventListener('click', ()=>$('drawer').classList.remove('open'));
@@ -254,7 +235,7 @@ $('exportJson').addEventListener('click', exportJson); $('importJsonBtn').addEve
 
 ['simBuy','simSell','simPass','simRep','simExtra','simDays'].forEach(id=>$(id).addEventListener('input', renderSimulator)); ['ordVatSales','ordVatCosts','ordDeductExtra','ordIrpefRate'].forEach(id=>$(id)&&$(id).addEventListener('input', renderOrdinary));
 
-document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', renderAll));
+document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', persist));
 
 // INIT ASINCRONO
 (async function init() {
