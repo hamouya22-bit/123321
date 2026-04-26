@@ -7,9 +7,93 @@ const fmtDate = d => d ? new Date(d).toLocaleDateString('it-IT') : '—';
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id'+Date.now()+Math.random().toString(16).slice(2));
 const $ = id => document.getElementById(id);
 const state = {cars:[], clients:[], deadlines:[], docs:[], settings:{}, editingCar:null, editingClient:null, editingDeadline:null, pendingCover:''};
+async function loadAllFromCloud() {
+  try {
+    const { data, error } = await supabase
+      .from('config') // Assicurati che la tabella si chiami 'config'
+      .select('data')
+      .eq('id', 1)
+      .single();
 
+    if (error) throw error;
+
+    if (data && data.data) {
+      const cloudState = data.data;
+      state.cars = cloudState.cars || [];
+      state.clients = cloudState.clients || [];
+      state.deadlines = cloudState.deadlines || [];
+      state.settings = cloudState.settings || {};
+      console.log("Dati sincronizzati dal Cloud");
+    }
+  } catch (err) {
+    console.error("Errore download Cloud:", err);
+    // Se fallisce il cloud, prova a caricare i dati locali
+    await hydrate();
+  }
+}
+
+async function saveToCloud() {
+  try {
+    const { error } = await supabase
+      .from('config')
+      .update({ data: { 
+        cars: state.cars, 
+        clients: state.clients, 
+        deadlines: state.deadlines, 
+        settings: state.settings 
+      }})
+      .eq('id', 1);
+
+    if (error) throw error;
+    console.log("Dati salvati nel Cloud");
+  } catch (err) {
+    console.error("Errore salvataggio Cloud:", err);
+  }
+}
 function persistTheme(){ localStorage.setItem('abg_theme', document.documentElement.dataset.theme); }
+// --- CLOUD SYNC ---
+async function loadAllFromCloud() {
+  try {
+    const { data, error } = await supabase
+      .from('config')
+      .select('data')
+      .eq('id', 1)
+      .single();
 
+    if (error) throw error;
+
+    if (data && data.data) {
+      const cloudState = data.data;
+      state.cars = cloudState.cars || [];
+      state.clients = cloudState.clients || [];
+      state.deadlines = cloudState.deadlines || [];
+      state.settings = cloudState.settings || {};
+      console.log("☁️ Dati sincronizzati dal Cloud");
+    }
+  } catch (err) {
+    console.warn("⚠️ Cloud vuoto o errore, uso dati locali:", err);
+    await hydrate(); 
+  }
+}
+
+async function saveToCloud() {
+  try {
+    const { error } = await supabase
+      .from('config')
+      .update({ data: { 
+        cars: state.cars, 
+        clients: state.clients, 
+        deadlines: state.deadlines, 
+        settings: state.settings 
+      }})
+      .eq('id', 1);
+
+    if (error) throw error;
+    console.log("☁️ Dati salvati nel Cloud");
+  } catch (err) {
+    console.error("❌ Errore salvataggio Cloud:", err);
+  }
+}
 async function hydrate(){
   try{
     const rawTheme=localStorage.getItem('abg_theme'); 
@@ -249,11 +333,21 @@ document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsP
 
 (async function init() {
   updateThemeThumb();
-  await hydrate();
+  
+  // Sostituiamo il caricamento locale con quello Cloud
+  try {
+    await loadAllFromCloud(); 
+    console.log("Dati caricati dal Cloud con successo");
+  } catch (e) {
+    console.error("Errore caricamento Cloud, provo locale...", e);
+    await hydrate(); 
+  }
+
   fillSettings();
-  renderAll();
+  renderAll(); // Nome corretto nel tuo script.js
   openPanel(routeToPanel());
-  window.addEventListener('hashchange', ()=>openPanel(routeToPanel()));
+  
+  window.addEventListener('hashchange', () => openPanel(routeToPanel()));
   
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
