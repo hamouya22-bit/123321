@@ -408,8 +408,43 @@ const fmtDate = d => d ? new Date(d).toLocaleDateString('it-IT') : '—';
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id'+Date.now()+Math.random().toString(16).slice(2));
 const $ = id => document.getElementById(id);
 const state = {cars:[], clients:[], deadlines:[], docs:[], settings:{}, editingCar:null, editingClient:null, editingDeadline:null, pendingCover:''};
+async function loadAllFromCloud(){
 
-function persist(){localStorage.setItem('abg_v5', JSON.stringify({cars:state.cars,clients:state.clients,deadlines:state.deadlines,docs:state.docs,settings:collectSettings(),theme:document.documentElement.dataset.theme}));}
+  const cars = await supabase.from('cars').select('*');
+  const clients = await supabase.from('clients').select('*');
+  const deadlines = await supabase.from('deadlines').select('*');
+  const docs = await supabase.from('docs').select('*');
+  const settings = await supabase.from('settings').select('*');
+
+  state.cars = cars.data || [];
+  state.clients = clients.data || [];
+  state.deadlines = deadlines.data || [];
+  state.docs = docs.data || [];
+  state.settings = settings.data?.[0] || {};
+
+  renderAll(); // oppure render() se usi quello
+}
+
+async function persist(){await saveAllToCloud();}
+  async function saveAllToCloud(){
+
+  // AUTO
+  await supabase.from('cars').upsert(state.cars);
+
+  // CLIENTI
+  await supabase.from('clients').upsert(state.clients);
+
+  // SCADENZE
+  await supabase.from('deadlines').upsert(state.deadlines);
+
+  // DOCUMENTI
+  await supabase.from('docs').upsert(state.docs);
+
+  // SETTINGS (una riga sola)
+  if(state.settings){
+    await supabase.from('settings').upsert([state.settings]);}
+
+  console.log("Dati salvati nel cloud");}
 function hydrate(){try{const raw=localStorage.getItem('abg_v5'); if(!raw) return; const d=JSON.parse(raw); state.cars=d.cars||[]; state.clients=d.clients||[]; state.deadlines=d.deadlines||[]; state.docs=d.docs||[]; state.settings=d.settings||{}; if(d.theme) document.documentElement.dataset.theme=d.theme;}catch(e){}}
 function collectSettings(){return {capitaleIniziale:Number($('capitaleIniziale').value||0),speseCommercialista:Number($('speseCommercialista').value||0),dataApertura:$('dataApertura').value,partitaIva:$('partitaIva').value.trim(),ragioneSociale:$('ragioneSociale').value.trim(),ateco:$('ateco').value.trim(),email:$('email').value.trim(),pec:$('pec').value.trim(),telefono:$('telefono').value.trim(),coeff:Number($('coeff').value||40),aliquotaImposta:Number($('aliquotaImposta').value||15),tipoInps:$('tipoInps').value,riduzione35:$('riduzione35').value==='si',noteAttivita:$('noteAttivita').value.trim()};}
 function fillSettings(){Object.entries(state.settings||{}).forEach(([k,v])=>{if($(k)) $(k).value=v;});}
@@ -505,6 +540,14 @@ $('exportJson').addEventListener('click', exportJson); $('importJsonBtn').addEve
 document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', renderAll));
 
 hydrate(); fillSettings(); updateThemeThumb(); renderAll(); openPanel(routeToPanel()); window.addEventListener('hashchange', ()=>openPanel(routeToPanel()));
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://ulepandzutlcxggwclne.supabase.co";
+const SUPABASE_KEY = "LA_TUA_KEY";
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 </script>
 </body>
 </html>
