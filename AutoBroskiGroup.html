@@ -538,8 +538,18 @@ $('askAi').addEventListener('click', askAi); $('copyPrompt').addEventListener('c
 $('exportJson').addEventListener('click', exportJson); $('importJsonBtn').addEventListener('click', ()=>$('importJson').click()); $('importJson').addEventListener('change', e=>e.target.files[0]&&importJsonFile(e.target.files[0])); $('exportCarsCsv').addEventListener('click', exportCarsCsv); $('exportClientsCsv').addEventListener('click', exportClientsCsv); $('wipeAll').addEventListener('click', wipeAll);
 ['simBuy','simSell','simPass','simRep','simExtra','simDays'].forEach(id=>$(id).addEventListener('input', renderSimulator)); ['ordVatSales','ordVatCosts','ordDeductExtra','ordIrpefRate'].forEach(id=>$(id)&&$(id).addEventListener('input', renderOrdinary));
 document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', renderAll));
+// Avvio dell'app modificato per il Cloud
+async function startApp() {
+    await loadAllFromCloud(); // Carica i dati dal cloud
+    fillSettings(); 
+    updateThemeThumb(); 
+    renderAll(); // Nome corretto della tua funzione di rendering
+    openPanel(routeToPanel());
+}
 
-hydrate(); fillSettings(); updateThemeThumb(); renderAll(); openPanel(routeToPanel()); window.addEventListener('hashchange', ()=>openPanel(routeToPanel()));
+startApp(); // Esegue la sequenza di avvio
+
+window.addEventListener('hashchange', () => openPanel(routeToPanel()));
 </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
