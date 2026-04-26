@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AutoBroskiGroup</title>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07090d;--bg2:#101825;--surface:#11161d;--surface2:#171e28;--line:#263446;--text:#eef4fb;--muted:#9eb0c3;--primary:#2fb4ff;--success:#26b562;--danger:#e14d67;--warning:#e2a12c;--shadow:0 20px 60px rgba(0,0,0,.35);--radius:22px;--radius-sm:16px}
+    html[data-theme="light"]{--bg:#eef6ff;--bg2:#f8fbff;--surface:#ffffff;--surface2:#f4f8fd;--line:#d1dfef;--text:#17324d;--muted:#65809a;--primary:#1697ea;--success:#22a75a;--danger:#d94662;--warning:#d58b1c;--shadow:0 18px 40px rgba(23,50,77,.12)}
+    *{box-sizing:border-box}body{margin:0;font-family:'Satoshi',system-ui,sans-serif;color:var(--text);background:radial-gradient(circle at top,var(--bg2) 0,var(--bg) 65%,#040507 100%)}html[data-theme="light"] body{background:radial-gradient(circle at top,#f8fbff 0,#eef6ff 60%,#e4eef9 100%)}
+    .app{max-width:1280px;margin:0 auto;padding:16px 16px 40px}.topbar{position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0 10px;background:linear-gradient(180deg,rgba(7,9,13,.94),rgba(7,9,13,.72),transparent);backdrop-filter:blur(16px)}html[data-theme="light"] .topbar{background:linear-gradient(180deg,rgba(238,246,255,.96),rgba(238,246,255,.72),transparent)}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}.badge{width:46px;height:46px;border-radius:16px;background:linear-gradient(145deg,#0a1018,#152030);border:1px solid #28415e;display:grid;place-items:center;box-shadow:var(--shadow)}html[data-theme="light"] .badge{background:linear-gradient(145deg,#fff,#eff6ff);border-color:#cddff0}.badge svg{width:28px;height:28px}.brand h1{margin:0;font-size:1rem;line-height:1.05}.brand p{margin:2px 0 0;color:var(--muted);font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .top-actions{display:flex;gap:10px;align-items:center}.menu-btn,.icon-btn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);min-width:46px;height:46px;border-radius:16px;display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}html[data-theme="light"] .menu-btn,html[data-theme="light"] .icon-btn{background:rgba(255,255,255,.8)}
+    .theme-switch{width:64px;height:36px;border-radius:999px;position:relative;padding:3px;background:linear-gradient(145deg,#0e1724,#1a2534);border:1px solid #2b425c;cursor:pointer;box-shadow:var(--shadow)}html[data-theme="light"] .theme-switch{background:linear-gradient(145deg,#fff,#ebf5ff);border-color:#cbdff2}.theme-switch .thumb{width:28px;height:28px;border-radius:50%;background:linear-gradient(145deg,#fff,#d9ebff);position:absolute;top:3px;left:4px;display:grid;place-items:center;transition:left .22s ease;color:#111;font-size:14px}html[data-theme="light"] .theme-switch .thumb{left:32px;background:linear-gradient(145deg,#fff6ce,#ffd35f)}
+    .hero{display:grid;gap:12px;padding:16px 2px 8px}.tag{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:8px 12px;border-radius:999px;background:rgba(47,180,255,.12);color:var(--primary);border:1px solid rgba(47,180,255,.24);font-weight:700;font-size:.78rem}.hero h2{margin:0;font-size:clamp(1.55rem,5vw,2.4rem);line-height:1.04}.hero p{margin:0;color:var(--muted);max-width:840px}
+    .grid{display:grid;grid-template-columns:1.3fr .95fr;gap:18px;margin-top:16px}.card{background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px);padding:18px;transition:transform .24s ease, border-color .24s ease, box-shadow .24s ease}.card:hover{transform:translateY(-2px);border-color:rgba(47,180,255,.34)}html[data-theme="light"] .card{background:linear-gradient(145deg,rgba(255,255,255,.95),rgba(244,249,255,.92))}
+    .section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.section-title h3{margin:0;font-size:1.05rem}.pill{padding:6px 10px;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid var(--line);color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.kpi{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line)}html[data-theme="light"] .kpi{background:#f8fbff}.kpi .label{font-size:.82rem;color:var(--muted)}.kpi .value{margin-top:8px;font-size:1.28rem;font-weight:800;line-height:1.05}.blue .value{color:var(--primary)}.green .value{color:var(--success)}.red .value{color:var(--danger)}.orange .value{color:var(--warning)}
+    .rows{display:grid;gap:10px;margin-top:14px}.row{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px dashed var(--line);font-size:.92rem}.row:last-child{border-bottom:0;padding-bottom:0}.value-right{text-align:right;font-weight:700}.muted{color:var(--muted)}
+    .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}.mini{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line)}html[data-theme="light"] .mini{background:#f7fbff}.mini h4{margin:0 0 8px 0}.mini ul{margin:0;padding-left:18px}.mini li{margin:6px 0;color:var(--muted)}
+    .drawer{position:fixed;top:0;right:0;height:100vh;width:min(1180px,100vw);background:linear-gradient(180deg,#0c1220,#091019);border-left:1px solid #28415e;z-index:60;transform:translateX(100%);transition:transform .22s ease;box-shadow:-20px 0 60px rgba(0,0,0,.4);overflow:auto;padding:16px}html[data-theme="light"] .drawer{background:linear-gradient(180deg,#fff,#eef6ff);border-left-color:#d1dfef}.drawer.open{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.06)}.drawer-head .small{margin-top:6px;display:inline-flex;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04)}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.nav button{border:1px solid var(--line);background:transparent;color:var(--text);padding:10px 14px;border-radius:999px;cursor:pointer;font-weight:700;transition:transform .22s ease, background .22s ease, color .22s ease, border-color .22s ease}.nav button:hover{transform:translateY(-1px)}.nav button.active{background:var(--primary);color:#fff;border-color:transparent}.panel{display:block;opacity:0;transform:translateY(12px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity .28s ease, transform .28s ease, max-height .28s ease}.panel.active{opacity:1;transform:translateY(0);max-height:10000px;overflow:visible;pointer-events:auto}
+    .panel-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}
+    label{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:.84rem;font-weight:700}input,select,textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text);padding:13px 14px;border-radius:18px;font:inherit;outline:none}html[data-theme="light"] input,html[data-theme="light"] select,html[data-theme="light"] textarea{background:#fff}textarea{min-height:92px;resize:vertical;border-radius:20px}input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(47,180,255,.16)}
+    .hint{font-size:.76rem;color:var(--muted);margin-top:5px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.btn{border:0;border-radius:16px;padding:12px 14px;min-height:44px;cursor:pointer;font-weight:800}.btn.primary{background:linear-gradient(135deg,#129cf2,#2fb4ff);color:#fff;box-shadow:0 12px 28px rgba(47,180,255,.25)}.btn.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}.btn.danger{background:linear-gradient(135deg,#cc4560,#e14d67);color:#fff}
+    .list{display:grid;gap:12px}.item{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);transition:transform .22s ease,border-color .22s ease}.item:hover{transform:translateY(-1px);border-color:rgba(47,180,255,.28)}html[data-theme="light"] .item{background:#f7fbff}.item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.item-top h4{margin:0;font-size:1rem}.item-top p{margin:3px 0 0;color:var(--muted);font-size:.8rem}.item-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.item-meta div{padding:10px;border-radius:14px;background:rgba(255,255,255,.04)}.small{font-size:.75rem;color:var(--muted)}
+    .timeline{display:grid;gap:8px;margin-top:12px}.tl-item{padding:10px 12px;border-radius:14px;background:rgba(47,180,255,.08);border:1px solid rgba(47,180,255,.2);font-size:.82rem}.status{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:.75rem;font-weight:800}.status.green{color:var(--success)}.status.red{color:var(--danger)}.status.orange{color:var(--warning)}.status.blue{color:var(--primary)}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.toolbar input,.toolbar select{max-width:260px}.doc-box{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line)}html[data-theme="light"] .doc-box{background:#f7fbff}.doc-box h4{margin:0 0 8px 0}.doc-box ul{margin:0;padding-left:18px}.doc-box li{margin:6px 0;color:var(--muted)}.docs{display:grid;gap:12px}.doc-box.forf{background:rgba(47,180,255,.08);border-color:rgba(47,180,255,.26)}.doc-box.ord{background:rgba(226,161,44,.12);border-color:rgba(226,161,44,.34)}.doc-box.ord h4{color:var(--warning)}.chiprow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:.75rem;font-weight:800;border:1px solid var(--line)}.chip.forf{color:var(--primary);border-color:rgba(47,180,255,.34);background:rgba(47,180,255,.10)}.chip.ord{color:var(--warning);border-color:rgba(226,161,44,.36);background:rgba(226,161,44,.12)}.link-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.link-card{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line);transition:transform .22s ease,border-color .22s ease}.link-card:hover{transform:translateY(-1px);border-color:rgba(47,180,255,.28)}.link-card a{color:var(--text);text-decoration:none;word-break:break-word}.route-intro{margin:0 0 12px 0;color:var(--muted)}.ord-kpi{padding:14px;border-radius:18px;background:rgba(226,161,44,.10);border:1px solid rgba(226,161,44,.34)}.ord-kpi .value{margin-top:8px;font-size:1.15rem;font-weight:800;color:var(--warning)}
+    .ai-answer{white-space:pre-wrap;padding:14px;border-radius:18px;background:rgba(47,180,255,.08);border:1px solid rgba(47,180,255,.22);min-height:150px}.upload-list{display:grid;gap:8px;margin-top:10px}.upload-item{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:.84rem}.cover{width:90px;height:68px;border-radius:14px;object-fit:cover;border:1px solid var(--line);background:#091019}.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tablelike{display:grid;gap:8px}.tablelike .line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}.tablelike .line:last-child{border-bottom:0}
+    .tooltip{position:relative;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--primary);color:#fff;font-size:11px;font-weight:800;cursor:pointer;border:0}.tooltip span{position:absolute;left:50%;top:-8px;transform:translate(-50%,-100%);min-width:220px;max-width:260px;padding:10px 12px;border-radius:14px;background:#0f1722;color:#eef4fb;border:1px solid #28415e;box-shadow:var(--shadow);font-size:.78rem;line-height:1.35;opacity:0;pointer-events:none;transition:.15s}html[data-theme="light"] .tooltip span{background:#17324d;color:#fff;border-color:#17324d}.tooltip:hover span,.tooltip:focus span,.tooltip.open span{opacity:1}
+    @media (max-width: 1100px){.grid,.panel-grid,.three{grid-template-columns:1fr}.item-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width: 700px){.app{padding:12px 12px 28px}.stats,.form-grid,.item-meta,.split{grid-template-columns:1fr}.brand p{display:none}.card,.drawer{padding:14px}.hero h2{font-size:1.7rem}.kpi .value{font-size:1.15rem}.item-top{flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="badge" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M6 25c5-7 12-10 21-10h9c2 0 4 .5 6 1.5" stroke="#2fb4ff" stroke-width="2.6" stroke-linecap="round"/><path d="M18 14c6-5 13-8 21-8 4 0 7 .7 9 2" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M14 31h18" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M34 31h10" stroke="#2fb4ff" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+      <div><h1>AutoBroskiGroup</h1><p>Controllo attività · rivendita auto · strategia quotidiana</p></div>
+    </div>
+    <div class="top-actions">
+      <button class="theme-switch" id="themeSwitch" aria-label="Cambia tema"><span class="thumb" id="themeThumb">🌙</span></button>
+      <button class="menu-btn" id="openDrawer">☰</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="tag">Gestione intelligente attività</div>
+    <h2>Tieni sotto controllo guadagni, spese, clienti e prossime mosse per far crescere la tua attività senza perdere tempo</h2>
+    <p>Questa schermata deve aiutarti a capire subito se stai lavorando bene, quanto puoi reinvestire, dove stai guadagnando davvero e su cosa ti conviene concentrarti oggi per gestire meglio la tua rivendita.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="section-title"><h3>Fiscale e numeri</h3><div class="pill">Home</div></div>
+      <div class="stats">
+        <div class="kpi blue"><div class="label">Ricavi totali</div><div class="value" id="dashRicavi">€ 0,00</div></div>
+        <div class="kpi blue"><div class="label">Reddito forfettario</div><div class="value" id="dashReddito">€ 0,00</div></div>
+        <div class="kpi orange"><div class="label">Contributi INPS</div><div class="value" id="dashInps">€ 0,00</div></div>
+        <div class="kpi orange"><div class="label">Imposta stimata</div><div class="value" id="dashImposta">€ 0,00</div></div>
+      </div>
+      <div class="rows">
+        <div class="row"><span>Base imponibile</span><span class="value-right" id="dashBase">€ 0,00</span></div>
+        <div class="row"><span>Coeff. redditività</span><span class="value-right" id="dashCoeff">40%</span></div>
+        <div class="row"><span>Aliquota imposta</span><span class="value-right" id="dashAliquota">15%</span></div>
+        <div class="row"><span>Stato soglia</span><span class="value-right" id="dashSoglia">Dentro soglia</span></div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="section-title"><h3>Controllo reale</h3><div class="pill">Operatività</div></div>
+      <div class="stats">
+        <div class="kpi red"><div class="label">Costi reali</div><div class="value" id="outCosti">€ 0,00</div></div>
+        <div class="kpi green"><div class="label">Guadagno spendibile</div><div class="value" id="outSpendibile">€ 0,00</div></div>
+        <div class="kpi green"><div class="label">Capitale riutilizzabile</div><div class="value" id="outCapitale">€ 0,00</div></div>
+        <div class="kpi blue"><div class="label">Auto registrate</div><div class="value" id="outCount">0</div></div>
+      </div>
+      <div class="rows">
+        <div class="row"><span>Margine medio per auto</span><span class="value-right" id="avgMargin">€ 0,00</span></div>
+        <div class="row"><span>Cliente attivi</span><span class="value-right" id="outClients">0</span></div>
+        <div class="row"><span>Scadenze aperte</span><span class="value-right" id="outDeadlines">0</span></div>
+        <div class="row"><span>Budget prudente acquisto</span><span class="value-right" id="safeBudget">€ 0,00</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="three">
+    <div class="card">
+      <div class="section-title"><h3>Alert</h3><div class="pill">Subito</div></div>
+      <div class="list" id="alertList"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>Top modelli</h3><div class="pill">Margini</div></div>
+      <div class="list" id="topModels"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>Da fare</h3><div class="pill">Prossime mosse</div></div>
+      <div class="list" id="quickTodos"></div>
+    </div>
+  </div>
+</div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div>
+      <strong style="display:block;font-size:1.05rem">AutoBroskiGroup</strong>
+      <div class="small" id="routePath">/dashboard</div>
+    </div>
+    <button class="icon-btn" id="closeDrawer">✕</button>
+  </div>
+  <div class="nav">
+    <button class="active" data-panel="dashboardPanel">Dashboard</button>
+    <button data-panel="autoPanel">Auto</button>
+    <button data-panel="clientsPanel">Clienti</button>
+    <button data-panel="deadlinesPanel">Scadenze</button>
+    <button data-panel="docsPanel">Documenti</button>
+    <button data-panel="linksPanel">Link utili</button>
+    <button data-panel="forfPanel">Forfettario</button>
+    <button data-panel="ordPanel">Ordinario</button>
+    <button data-panel="advicePanel">Consigli</button>
+    <button data-panel="aiPanel">AI</button>
+    <button data-panel="settingsPanel">Impostazioni</button>
+  </div>
+
+  <section class="panel active" id="dashboardPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Dashboard</h3><div class="pill">Percorso</div></div>
+        <div class="rows" id="todayFocus"></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Azioni consigliate</h3><div class="pill">Subito</div></div>
+        <div class="rows" id="todayActions"></div>
+      </div>
+    </div>
+    <div class="three" style="margin-top:16px">
+      <div class="card"><div class="section-title"><h3>Clienti caldi</h3><div class="pill">Follow-up</div></div><div class="list" id="todayClients"></div></div>
+      <div class="card"><div class="section-title"><h3>Auto ferme</h3><div class="pill">Capitale bloccato</div></div><div class="list" id="todayCars"></div></div>
+      <div class="card"><div class="section-title"><h3>Liquidità</h3><div class="pill">Scelta prudente</div></div><div class="list" id="todayCash"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="autoPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Scheda auto completa</h3><div class="pill">Inserisci e aggiorna</div></div>
+        <div class="form-grid">
+          <div><label for="carName">Nome auto <button type="button" class="tooltip">i<span>Marca e modello dell'auto, utile per riconoscerla subito e leggerla nei report.</span></button></label><input id="carName" type="text" placeholder="Es. Fiat Panda 1.2"></div>
+          <div><label for="carPlate">Targa / codice <button type="button" class="tooltip">i<span>Usa targa o un tuo codice interno per trovarla velocemente.</span></button></label><input id="carPlate" type="text" placeholder="AB123CD"></div>
+          <div><label for="carStatus">Stato auto <button type="button" class="tooltip">i<span>Ti aiuta a capire in che fase si trova la trattativa o la preparazione.</span></button></label><select id="carStatus"><option>Da visionare</option><option>Comprata</option><option>In preparazione</option><option>In vendita</option><option>Venduta</option><option>Consegnata</option></select></div>
+          <div><label for="carSource">Fonte auto <button type="button" class="tooltip">i<span>Segna da dove arriva l'auto per capire quali fonti rendono meglio.</span></button></label><select id="carSource"><option>Privato</option><option>Concessionario</option><option>Asta</option><option>Conoscente</option><option>Altro</option></select></div>
+          <div><label for="buyDate">Data acquisto <button type="button" class="tooltip">i<span>La data di acquisto serve anche per controllare i giorni di fermo.</span></button></label><input id="buyDate" type="date"></div>
+          <div><label for="sellDate">Data vendita <button type="button" class="tooltip">i<span>Inseriscila quando chiudi per tenere corretti ricavi e storico.</span></button></label><input id="sellDate" type="date"></div>
+          <div><label for="buyPrice">Costo acquisto <button type="button" class="tooltip">i<span>Prezzo di acquisto puro del veicolo.</span></button></label><input id="buyPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="sellPrice">Prezzo vendita <button type="button" class="tooltip">i<span>Prezzo finale di vendita o già incassato.</span></button></label><input id="sellPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="targetPrice">Prezzo obiettivo <button type="button" class="tooltip">i<span>Prezzo ideale a cui vorresti vendere.</span></button></label><input id="targetPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="minPrice">Prezzo minimo <button type="button" class="tooltip">i<span>Prezzo sotto il quale non ti conviene scendere.</span></button></label><input id="minPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="passaggio">Pratiche / passaggio <button type="button" class="tooltip">i<span>Costi di pratiche, passaggio o spese simili.</span></button></label><input id="passaggio" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="riparazioni">Riparazioni <button type="button" class="tooltip">i<span>Tutti gli interventi fatti per preparare il mezzo.</span></button></label><input id="riparazioni" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="carburante">Carburante <button type="button" class="tooltip">i<span>Carburante usato per spostamenti, prove o consegna.</span></button></label><input id="carburante" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="altroCosto">Altri costi <button type="button" class="tooltip">i<span>Qualsiasi costo extra non coperto dalle altre voci.</span></button></label><input id="altroCosto" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="saleChannel">Canale vendita <button type="button" class="tooltip">i<span>Segna dove hai concluso o stai portando avanti la vendita.</span></button></label><select id="saleChannel"><option>Subito</option><option>Marketplace</option><option>Passaparola</option><option>Cliente diretto</option><option>Altro</option></select></div>
+          <div><label for="clientLink">Cliente collegato <button type="button" class="tooltip">i<span>Collega la scheda auto a un cliente già registrato.</span></button></label><select id="clientLink"><option value="">Nessuno</option></select></div>
+          <div class="full"><label for="coverUpload">Foto copertina <button type="button" class="tooltip">i<span>Una foto copertina rende più rapida la lettura visiva delle schede.</span></button></label><input id="coverUpload" type="file" accept="image/*"><div class="hint">Una copertina leggera aiuta a riconoscere l'auto. Troppe immagini possono riempire il salvataggio locale.</div></div>
+          <div class="full"><label for="carNotes">Note auto <button type="button" class="tooltip">i<span>Qui metti dettagli utili, difetti, margini, errori da evitare e appunti.</span></button></label><textarea id="carNotes" placeholder="Difetti, lavori fatti, prezzo minimo, stato trattativa, errori da evitare, dettagli importanti"></textarea></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="saveCar">Salva auto</button>
+          <button class="btn secondary" id="resetCar">Svuota</button>
+          <button class="btn secondary" id="closeSaleBtn">Chiudi vendita rapida</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Simulatore acquisto</h3><div class="pill">Prima di comprare</div></div>
+        <div class="form-grid">
+          <div><label for="simBuy">Acquisto <button type="button" class="tooltip">i<span>Importo stimato di acquisto per la simulazione.</span></button></label><input id="simBuy" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simSell">Vendita prevista <button type="button" class="tooltip">i<span>Quanto pensi realistico di incassare dalla vendita.</span></button></label><input id="simSell" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simPass">Passaggio <button type="button" class="tooltip">i<span>Pratiche e costi collegati al trasferimento.</span></button></label><input id="simPass" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simRep">Ripristino <button type="button" class="tooltip">i<span>Quanto pensi di spendere per sistemarla prima della vendita.</span></button></label><input id="simRep" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simExtra">Extra <button type="button" class="tooltip">i<span>Extra vari, imprevisti o costi non classificati.</span></button></label><input id="simExtra" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simDays">Giorni stimati fermo <button type="button" class="tooltip">i<span>Quanti giorni pensi che l'auto resterà ferma prima di venderla.</span></button></label><input id="simDays" type="number" min="0" step="1" value="20"></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span>Costo totale stimato</span><span class="value-right" id="simTotal">€ 0,00</span></div>
+          <div class="row"><span>Margine stimato</span><span class="value-right" id="simMargin">€ 0,00</span></div>
+          <div class="row"><span>Esito</span><span class="value-right" id="simVerdict">Da valutare</span></div>
+        </div>
+        <div class="toolbar" style="margin-top:14px">
+          <input id="carSearch" type="text" placeholder="Cerca auto, targa, note">
+          <select id="carFilter"><option value="">Tutti gli stati</option><option>Da visionare</option><option>Comprata</option><option>In preparazione</option><option>In vendita</option><option>Venduta</option><option>Consegnata</option></select>
+        </div>
+        <div class="hint">Se il margine stimato è basso o il budget supera il capitale prudente, conviene pensarci due volte.</div>
+      </div>
+    </div>
+    <div class="list" id="carList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="clientsPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>CRM clienti</h3><div class="pill">Trattative</div></div>
+        <div class="form-grid">
+          <div><label for="clientName">Nome cliente <button type="button" class="tooltip">i<span>Nome del cliente o contatto principale.</span></button></label><input id="clientName" type="text" placeholder="Mario Rossi"></div>
+          <div><label for="clientPhone">Telefono <button type="button" class="tooltip">i<span>Numero utile per richiamarlo al momento giusto.</span></button></label><input id="clientPhone" type="tel" placeholder="339..."></div>
+          <div><label for="clientEmail">Email <button type="button" class="tooltip">i<span>Email del cliente se la usi per invio info o documenti.</span></button></label><input id="clientEmail" type="email" placeholder="cliente@email.it"></div>
+          <div><label for="clientBudget">Budget <button type="button" class="tooltip">i<span>Quanto è disposto a spendere secondo quello che ti ha detto.</span></button></label><input id="clientBudget" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="clientInterest">Auto interessata <button type="button" class="tooltip">i<span>Che tipo di auto sta cercando o quale scheda sta seguendo.</span></button></label><input id="clientInterest" type="text" placeholder="Es. Panda, Ibiza, SUV"></div>
+          <div><label for="clientStatus">Stato trattativa <button type="button" class="tooltip">i<span>Serve per capire se è freddo, caldo o già vicino alla chiusura.</span></button></label><select id="clientStatus"><option>Nuovo</option><option>Caldo</option><option>In trattativa</option><option>Appuntamento</option><option>Chiuso</option><option>Perso</option></select></div>
+          <div><label for="clientFollow">Prossimo follow-up <button type="button" class="tooltip">i<span>Data in cui vuoi ricontattarlo.</span></button></label><input id="clientFollow" type="date"></div>
+          <div><label for="clientSource">Provenienza <button type="button" class="tooltip">i<span>Da dove è arrivato il contatto.</span></button></label><select id="clientSource"><option>Subito</option><option>Passaparola</option><option>Instagram</option><option>Marketplace</option><option>Altro</option></select></div>
+          <div class="full"><label for="clientNotes">Note cliente <button type="button" class="tooltip">i<span>Annota cosa vuole, cosa ha detto e la prossima mossa.</span></button></label><textarea id="clientNotes" placeholder="Cosa cerca, cosa ha detto, problemi, prossima mossa"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" id="saveClient">Salva cliente</button><button class="btn secondary" id="resetClient">Svuota</button></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Promemoria clienti</h3><div class="pill">Follow-up</div></div>
+        <div class="list" id="clientReminderList"></div>
+      </div>
+    </div>
+    <div class="list" id="clientList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="deadlinesPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Scadenze e to-do</h3><div class="pill">Niente dimenticanze</div></div>
+        <div class="form-grid">
+          <div><label for="deadlineTitle">Titolo <button type="button" class="tooltip">i<span>Nome breve della scadenza o della cosa da fare.</span></button></label><input id="deadlineTitle" type="text" placeholder="Pagare F24, chiamare cliente, fare foto"></div>
+          <div><label for="deadlineDate">Data <button type="button" class="tooltip">i<span>Data in cui la vuoi chiudere o controllare.</span></button></label><input id="deadlineDate" type="date"></div>
+          <div><label for="deadlineCategory">Categoria <button type="button" class="tooltip">i<span>Ti aiuta a filtrare e capire subito il tipo di impegno.</span></button></label><select id="deadlineCategory"><option>Fiscale</option><option>Auto</option><option>Cliente</option><option>Documento</option><option>Personale</option></select></div>
+          <div><label for="deadlinePriority">Priorità <button type="button" class="tooltip">i<span>Serve a separare ciò che è urgente da ciò che può aspettare.</span></button></label><select id="deadlinePriority"><option>Alta</option><option>Media</option><option>Bassa</option></select></div>
+          <div><label for="deadlineStatus">Stato <button type="button" class="tooltip">i<span>Indica se la scadenza è aperta, in corso o già fatta.</span></button></label><select id="deadlineStatus"><option>Aperta</option><option>In corso</option><option>Fatta</option></select></div>
+          <div><label for="deadlineLink">Collega a <button type="button" class="tooltip">i<span>Collega la voce a un'auto, cliente o documento.</span></button></label><input id="deadlineLink" type="text" placeholder="Targa, cliente, documento"></div>
+          <div class="full"><label for="deadlineNotes">Note <button type="button" class="tooltip">i<span>Dettagli rapidi per non perdere il contesto.</span></button></label><textarea id="deadlineNotes" placeholder="Dettagli utili"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" id="saveDeadline">Salva scadenza</button><button class="btn secondary" id="resetDeadline">Svuota</button></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Scadenze vicine</h3><div class="pill">Occhio</div></div>
+        <div class="list" id="deadlineSoonList"></div>
+      </div>
+    </div>
+    <div class="list" id="deadlineList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="docsPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Archivio documenti</h3><div class="pill">Ordine vero</div></div>
+        <div class="form-grid">
+          <div><label for="docTag">Etichetta <button type="button" class="tooltip">i<span>Etichetta breve per trovare il documento più velocemente.</span></button></label><input id="docTag" type="text" placeholder="Es. Contratto Panda, F24, Bonifico"></div>
+          <div><label for="docType">Tipo <button type="button" class="tooltip">i<span>Tipo documento per avere un archivio più ordinato.</span></button></label><select id="docType"><option>Documento</option><option>Ricevuta</option><option>Fattura</option><option>F24</option><option>Foto</option><option>Altro</option></select></div>
+          <div class="full"><label for="docUpload">Carica file <button type="button" class="tooltip">i<span>Puoi caricare file e leggere un'anteprima testuale quando disponibile.</span></button></label><input id="docUpload" type="file" multiple><div class="hint">L'app salva nome, tipo e anteprima testo quando possibile. Per immagini legge una mini anteprima.</div></div>
+        </div>
+        <div class="actions"><button class="btn secondary" id="clearDocs">Svuota archivio</button></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Backup dati</h3><div class="pill">Non perdere nulla</div></div>
+        <div class="tablelike">
+          <div class="line"><span>Esporta tutto</span><button class="btn secondary" id="exportJson">Esporta JSON</button></div>
+          <div class="line"><span>Importa backup</span><button class="btn secondary" id="importJsonBtn">Importa JSON</button></div>
+          <div class="line"><span>Esporta CSV auto</span><button class="btn secondary" id="exportCarsCsv">CSV Auto</button></div>
+          <div class="line"><span>Esporta CSV clienti</span><button class="btn secondary" id="exportClientsCsv">CSV Clienti</button></div>
+        </div>
+        <input id="importJson" type="file" accept="application/json" style="display:none">
+      </div>
+    </div>
+    <div class="upload-list" id="docList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="linksPanel">
+    <p class="route-intro">Qui trovi siti utili da controllare per visure, pratiche, documenti, norme, monitoraggio della tua impresa e ricerca del mercato auto.</p>
+    <div class="link-grid">
+      <div class="link-card"><strong>Registro Imprese</strong><div class="small">Dati ufficiali, visure, ricerca imprese</div><div style="margin-top:8px"><a href="https://www.registroimprese.it" target="_blank">https://www.registroimprese.it</a></div></div>
+      <div class="link-card"><strong>Impresa Italia</strong><div class="small">Cassetto digitale impresa e documenti</div><div style="margin-top:8px"><a href="https://impresa.italia.it" target="_blank">https://impresa.italia.it</a></div></div>
+      <div class="link-card"><strong>MIMIT Registro Imprese</strong><div class="small">Quadro istituzionale sul Registro delle imprese</div><div style="margin-top:8px"><a href="https://www.mimit.gov.it/it/impresa/registro-delle-imprese" target="_blank">https://www.mimit.gov.it/it/impresa/registro-delle-imprese</a></div></div>
+      <div class="link-card"><strong>Normattiva</strong><div class="small">Testo della Legge 190/2014 che ha istituito il forfettario</div><div style="margin-top:8px"><a href="https://www.normattiva.it/uri-res/N2Ls?urn%3Anir%3Astato%3Alegge%3A2014%3B190~art1%21vig=" target="_blank">Apri Normattiva</a></div></div>
+      <div class="link-card"><strong>ACI</strong><div class="small">Hub ufficiale, PRA, servizi e mobilità</div><div style="margin-top:8px"><a href="https://www.aci.it" target="_blank">https://www.aci.it</a></div></div>
+      <div class="link-card"><strong>ACI Gov</strong><div class="small">Portale pratiche auto e servizi PRA/STA</div><div style="margin-top:8px"><a href="https://aci.gov.it" target="_blank">https://aci.gov.it</a></div></div>
+      <div class="link-card"><strong>STA</strong><div class="small">Sportello Telematico dell'Automobilista</div><div style="margin-top:8px"><a href="https://aci.gov.it/pratica-auto/lo-sportello-telematico-dellautomobilista-sta/" target="_blank">Apri STA</a></div></div>
+      <div class="link-card"><strong>PRA e pratiche</strong><div class="small">Informazioni su PRA, appuntamenti e pratiche</div><div style="margin-top:8px"><a href="https://up.aci.it/default-province/pubblico-registro-automobilistico-pra-e-pratiche-auto/" target="_blank">Apri PRA</a></div></div>
+      <div class="link-card"><strong>Forniture dati PRA</strong><div class="small">Accesso e forniture dati per esigenze professionali</div><div style="margin-top:8px"><a href="https://aci.gov.it/servizio/fornitura-dati-pra/" target="_blank">Apri servizio</a></div></div>
+      <div class="link-card"><strong>Guida forfettario</strong><div class="small">Approfondimento pratico e aggiornato</div><div style="margin-top:8px"><a href="https://fiscomania.com/regime-forfettario/" target="_blank">Apri guida</a></div></div>
+      <div class="link-card"><strong>Chiarimenti Agenzia</strong><div class="small">Riferimenti alla circolare 32/E e ai chiarimenti</div><div style="margin-top:8px"><a href="https://www.fiscoetasse.com/normativa-prassi/13303-contribuenti-in-regime-forfetario-tutti-i-chiarimenti-dellagenzia.html" target="_blank">Apri riepilogo</a></div></div>
+      <div class="link-card"><strong>Mercato auto</strong><div class="small">Tieni d'occhio portali e comparazione auto usate</div><div style="margin-top:8px"><a href="https://www.aranzulla.it/migliori-siti-auto-usate-1011321.html" target="_blank">Elenco siti auto usate</a></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="forfPanel">
+    <div class="docs">
+      <div class="doc-box forf"><h4>Forfettario in breve</h4><ul><li>È il tuo regime principale: semplice da gestire, con imposta sostitutiva e niente IVA esposta in fattura.</li><li>Guarda spesso soglia ricavi, coefficiente corretto e differenza tra utile fiscale e margine reale.</li><li>Usa questa sezione breve quando vuoi una lettura veloce, poi sotto trovi la guida lunga e completa.</li></ul><div class="chiprow"><span class="chip forf">Soglia 85.000 €</span><span class="chip forf">Uscita immediata oltre 100.000 €</span><span class="chip forf">Imposta 15% o 5%</span></div></div>
+      <div class="doc-box forf"><h4>Guida completa</h4><ul><li>Il regime forfettario è stato istituito dalla Legge 190/2014, art. 1, commi da 54 a 89, ed è il riferimento normativo da tenere d'occhio quando vuoi capire base legale, requisiti e struttura generale del regime.</li><li>Il reddito imponibile non nasce dalla somma analitica dei costi, ma dall'applicazione del coefficiente di redditività ai ricavi o compensi, quindi il confronto con i tuoi costi reali va sempre fatto separatamente per capire il vero margine della tua attività.</li><li>Per chi opera nel commercio il coefficiente tipico è 40%, mentre per gli intermediari del commercio il coefficiente richiamato è 62%; per questo è importante tenere ben chiaro il codice ATECO usato nella tua attività concreta.</li><li>La soglia ordinaria di permanenza è 85.000 euro di ricavi annui, mentre oltre 100.000 euro la fuoriuscita è immediata e si passa al regime ordinario dall'operazione che determina il superamento.</li><li>L'imposta sostitutiva è in via ordinaria al 15%, con aliquota al 5% nei casi agevolati iniziali previsti; inoltre il regime comporta, in generale, semplificazioni contabili rispetto all'ordinario.</li><li>Nel forfettario, in linea generale, non addebiti IVA in fattura, non scarichi l'IVA come nel regime ordinario e ragioni soprattutto per coefficiente fiscale e contributi deducibili.</li><li>I contributi previdenziali obbligatori sono la voce classica che abbatte la base imponibile prima dell'imposta sostitutiva, quindi nella tua dashboard conviene sempre guardarli insieme ai ricavi.</li><li>Tra le cause e i punti da monitorare ci sono soglia ricavi, eventuale superamento dei limiti, corretto inquadramento dell'attività, e attenzione ai chiarimenti più recenti richiamati dalla circolare 32/E del 2023 dell'Agenzia delle Entrate.</li><li>Per il lavoro quotidiano, però, la cosa più utile è ricordare che il forfettario ti semplifica il lato fiscale ma non sostituisce il controllo manageriale: un'auto può risultare fiscalmente dentro i parametri ma lasciarti poco margine reale se i costi sono saliti troppo.</li><li>Per questo l'app tiene separate la parte fiscale e la parte reale dell'attività: la prima ti dice come gira il regime, la seconda ti dice se stai davvero lavorando bene.</li></ul></div>
+      <div class="doc-box forf"><h4>Cose da tenere d'occhio</h4><ul><li>Controlla spesso quanto manca alla soglia e non aspettare fine anno.</li><li>Confronta sempre ricavo, costo totale reale e margine netto per auto.</li><li>Segna bene ogni spesa, anche se fiscalmente nel forfettario non funziona come l'ordinario, perché ti serve per capire se il business gira davvero.</li><li>Tieni d'occhio i chiarimenti di Agenzia Entrate, Registro Imprese, ACI/PRA e le pratiche auto che possono impattare il lavoro quotidiano.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel" id="ordPanel">
+    <div class="panel-grid">
+      <div class="card" style="border-color:rgba(226,161,44,.34)">
+        <div class="section-title"><h3>Regime ordinario</h3><div class="pill" style="color:var(--warning);border-color:rgba(226,161,44,.34)">Colore separato</div></div>
+        <div class="docs">
+          <div class="doc-box ord"><h4>Come funziona</h4><ul><li>Nell'ordinario il reddito si costruisce in modo analitico: ricavi meno costi effettivi deducibili, se correttamente documentati.</li><li>Entrano in gioco IVA, gestione contabile più articolata e tassazione progressiva IRPEF per le persone fisiche.</li><li>Questo regime è più complesso, ma in certi casi riflette meglio i costi reali dell'attività.</li></ul></div>
+          <div class="doc-box ord"><h4>Cosa cambia rispetto al forfettario</h4><ul><li>Nel forfettario usi coefficiente e imposta sostitutiva; nell'ordinario ragioni su costi veri, IVA e tassazione progressiva.</li><li>Se hai molti costi documentati, l'ordinario può risultare più aderente alla realtà economica dell'attività.</li><li>Di contro richiede più ordine contabile, più adempimenti e più attenzione continua.</li></ul></div>
+          <div class="doc-box ord"><h4>Quando guardarlo davvero</h4><ul><li>Quando i costi reali diventano pesanti e vuoi capire se il forfettario ti sta ancora convenendo.</li><li>Quando vuoi simulare quanta IVA teorica avresti gestito e quale sarebbe stata la base imponibile analitica.</li><li>Quando vuoi una fotografia organizzata delle spese reali del business, separate dal calcolo forfettario.</li></ul></div>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(226,161,44,.34)">
+        <div class="section-title"><h3>Simulatore ordinario</h3><div class="pill" style="color:var(--warning);border-color:rgba(226,161,44,.34)">Stima semplificata</div></div>
+        <div class="form-grid">
+          <div><label for="ordVatSales">IVA vendite %</label><input id="ordVatSales" type="number" min="0" max="100" step="0.01" value="22"></div>
+          <div><label for="ordVatCosts">IVA costi %</label><input id="ordVatCosts" type="number" min="0" max="100" step="0.01" value="22"></div>
+          <div><label for="ordDeductExtra">Altri costi deducibili</label><input id="ordDeductExtra" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="ordIrpefRate">IRPEF media stimata %</label><input id="ordIrpefRate" type="number" min="0" max="100" step="0.01" value="23"></div>
+        </div>
+        <div class="hint">Questa è una stima pratica e semplificata per capire come si sarebbero mossi costi, IVA e base imponibile in ordinario, non un calcolo fiscale definitivo.</div>
+        <div class="stats" style="margin-top:14px">
+          <div class="ord-kpi"><div class="label">Ricavi ordinario</div><div class="value" id="ordRicavi">€ 0,00</div></div>
+          <div class="ord-kpi"><div class="label">Costi deducibili</div><div class="value" id="ordCosti">€ 0,00</div></div>
+          <div class="ord-kpi"><div class="label">IVA vendite</div><div class="value" id="ordIvaVendite">€ 0,00</div></div>
+          <div class="ord-kpi"><div class="label">IVA costi</div><div class="value" id="ordIvaCosti">€ 0,00</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span>Saldo IVA teorico</span><span class="value-right" id="ordSaldoIva">€ 0,00</span></div>
+          <div class="row"><span>Reddito analitico</span><span class="value-right" id="ordReddito">€ 0,00</span></div>
+          <div class="row"><span>IRPEF stimata</span><span class="value-right" id="ordIrpef">€ 0,00</span></div>
+          <div class="row"><span>Risultato dopo stima</span><span class="value-right" id="ordNetto">€ 0,00</span></div>
+        </div>
+        <div class="docs" style="margin-top:14px">
+          <div class="doc-box ord"><h4>Lettura pratica</h4><ul><li>Qui vedi come i tuoi costi reali peserebbero in un assetto ordinario.</li><li>È utile per confrontare mentalmente il tuo regime attuale con uno scenario più analitico.</li><li>Usalo come cruscotto di confronto, non come sostituto della contabilità vera.</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="advicePanel">
+    <div class="docs">
+      <div class="doc-box"><h4>Controlli settimanali</h4><ul><li>Guarda capitale riutilizzabile prima di comprare un'altra auto.</li><li>Controlla quali auto stanno ferme da troppi giorni.</li><li>Aggiorna subito stato, data vendita e cliente appena chiudi una trattativa.</li></ul></div>
+      <div class="doc-box"><h4>Trucchetti utili</h4><ul><li>Non guardare solo il prezzo di acquisto: valuta sempre il costo totale reale.</li><li>Imposta un prezzo minimo e uno obiettivo per evitare trattative improvvisate.</li><li>Se un modello ti lascia poco margine più volte, smetti di inseguirlo.</li></ul></div>
+      <div class="doc-box"><h4>Documenti da tenere bene</h4><ul><li>Bonifici, ricevute, F24, passaggi, fatture, foto, accordi cliente e note.</li><li>Usa tag chiari nei documenti così trovi tutto più in fretta.</li><li>Fai backup periodico in JSON e salvalo fuori dall'app.</li></ul></div>
+      <div class="doc-box"><h4>Errori da evitare</h4><ul><li>Bloccare troppo capitale su un'auto sola.</li><li>Dimenticare costi piccoli che alla fine mangiano il margine.</li><li>Non segnare follow-up cliente e perdere vendite già calde.</li></ul></div>
+      <div class="doc-box"><h4>Come usare l'app bene</h4><ul><li>Home per decidere velocemente.</li><li>Auto per margini, storico e operatività.</li><li>Clienti e scadenze per non perdere trattative e impegni.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel" id="aiPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Assistente interno gratuito</h3><div class="pill">Sui tuoi dati</div></div>
+        <div class="hint">Questo assistente lavora con i dati della mini app, le note e il testo leggibile dei documenti caricati. È pensato per consigli pratici, riassunti e supporto operativo.</div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="full"><label for="aiQuestion">Domanda <button type="button" class="tooltip">i<span>Scrivi qui la domanda operativa che vuoi fare all'assistente.</span></button></label><textarea id="aiQuestion" placeholder="Es. Quanto posso reinvestire? Qual è la mia auto peggiore? Su cosa devo concentrarmi oggi?"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" id="askAi">Chiedi</button><button class="btn secondary" id="copyPrompt">Copia prompt avanzato</button></div>
+        <div class="ai-answer" id="aiAnswer">Qui comparirà la risposta dell'assistente.</div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Domande utili</h3><div class="pill">Esempi</div></div>
+        <div class="docs">
+          <div class="doc-box"><h4>Operatività</h4><ul><li>Quanto posso reinvestire senza rischiare troppo?</li><li>Quali auto mi stanno bloccando capitale?</li><li>Quale cliente devo ricontattare oggi?</li></ul></div>
+          <div class="doc-box"><h4>Margini</h4><ul><li>Qual è la mia auto più redditizia?</li><li>Quali costi mi stanno pesando di più?</li><li>Su quali canali vendo meglio?</li></ul></div>
+          <div class="doc-box"><h4>Controllo</h4><ul><li>Sono vicino alla soglia?</li><li>Quali scadenze devo guardare subito?</li><li>Riassumimi la situazione attuale in modo semplice.</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="settingsPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Impostazioni attività</h3><div class="pill">Dati base</div></div>
+        <div class="form-grid">
+          <div><label for="capitaleIniziale">Capitale iniziale <button type="button" class="tooltip">i<span>Il capitale con cui parti per comprare e far girare le prime auto.</span></button></label><input id="capitaleIniziale" type="number" min="0" step="0.01" value="5000"></div>
+          <div><label for="speseCommercialista">Spese commercialista <button type="button" class="tooltip">i<span>Usala se vuoi includere questa voce nei costi reali annuali.</span></button></label><input id="speseCommercialista" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="dataApertura">Data apertura <button type="button" class="tooltip">i<span>Ti aiuta a tenere memoria dell'avvio attività.</span></button></label><input id="dataApertura" type="date"></div>
+          <div><label for="partitaIva">Partita IVA <button type="button" class="tooltip">i<span>Numero di partita IVA dell'attività.</span></button></label><input id="partitaIva" type="text" placeholder="Inserisci partita IVA"></div>
+          <div><label for="ragioneSociale">Nome attività <button type="button" class="tooltip">i<span>Nome che vuoi usare come intestazione interna nell'app.</span></button></label><input id="ragioneSociale" type="text" placeholder="AutoBroskiGroup"></div>
+          <div><label for="ateco">Codice ATECO <button type="button" class="tooltip">i<span>Codice attività utile anche per il ragionamento fiscale.</span></button></label><input id="ateco" type="text" placeholder="Es. 45.11.02"></div>
+          <div><label for="email">Email <button type="button" class="tooltip">i<span>Email principale dell'attività.</span></button></label><input id="email" type="email" placeholder="info@..." /></div>
+          <div><label for="pec">PEC <button type="button" class="tooltip">i<span>PEC ufficiale per comunicazioni formali.</span></button></label><input id="pec" type="email" placeholder="...@pec.it" /></div>
+          <div><label for="telefono">Telefono <button type="button" class="tooltip">i<span>Numero da associare all'attività.</span></button></label><input id="telefono" type="tel" placeholder="339..." /></div>
+          <div><label for="coeff">Coeff. redditività <button type="button" class="tooltip">i<span>Percentuale usata nel calcolo del reddito forfettario.</span></button></label><input id="coeff" type="number" min="1" max="100" step="0.01" value="40"></div>
+          <div><label for="aliquotaImposta">Imposta sostitutiva <button type="button" class="tooltip">i<span>Aliquota del regime forfettario che vuoi usare nei calcoli.</span></button></label><select id="aliquotaImposta"><option value="5">5%</option><option value="15" selected>15%</option></select></div>
+          <div><label for="tipoInps">Tipo INPS <button type="button" class="tooltip">i<span>Serve per la simulazione contributiva interna della dashboard.</span></button></label><select id="tipoInps"><option value="commercianti" selected>Commercianti</option><option value="artigiani">Artigiani</option><option value="zero">Nessun calcolo</option></select></div>
+          <div><label for="riduzione35">Riduzione 35% <button type="button" class="tooltip">i<span>Riduzione contributiva applicabile nei casi previsti.</span></button></label><select id="riduzione35"><option value="no" selected>No</option><option value="si">Sì</option></select></div>
+          <div class="full"><label for="noteAttivita">Note attività <button type="button" class="tooltip">i<span>Regole personali, promemoria e informazioni importanti dell'attività.</span></button></label><textarea id="noteAttivita" placeholder="Regole personali, banca, conto dedicato, promemoria utili"></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Funzioni utili</h3><div class="pill">Extra</div></div>
+        <div class="tablelike">
+          <div class="line"><span>Azzerare tutti i dati</span><button class="btn danger" id="wipeAll">Reset totale</button></div>
+          <div class="line"><span>Salvataggio locale</span><span class="small">Automatico nel browser</span></div>
+          <div class="line"><span>Tema</span><span class="small">Luna / sole in alto</span></div>
+          <div class="line"><span>Assistente</span><span class="small">Usa dati app + documenti</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</aside>
+
+<script>
+const euro = n => new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(Number(n||0));
+const fmtDate = d => d ? new Date(d).toLocaleDateString('it-IT') : '—';
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id'+Date.now()+Math.random().toString(16).slice(2));
+const $ = id => document.getElementById(id);
+const state = {cars:[], clients:[], deadlines:[], docs:[], settings:{}, editingCar:null, editingClient:null, editingDeadline:null, pendingCover:''};
+
+function persist(){localStorage.setItem('abg_v5', JSON.stringify({cars:state.cars,clients:state.clients,deadlines:state.deadlines,docs:state.docs,settings:collectSettings(),theme:document.documentElement.dataset.theme}));}
+function hydrate(){try{const raw=localStorage.getItem('abg_v5'); if(!raw) return; const d=JSON.parse(raw); state.cars=d.cars||[]; state.clients=d.clients||[]; state.deadlines=d.deadlines||[]; state.docs=d.docs||[]; state.settings=d.settings||{}; if(d.theme) document.documentElement.dataset.theme=d.theme;}catch(e){}}
+function collectSettings(){return {capitaleIniziale:Number($('capitaleIniziale').value||0),speseCommercialista:Number($('speseCommercialista').value||0),dataApertura:$('dataApertura').value,partitaIva:$('partitaIva').value.trim(),ragioneSociale:$('ragioneSociale').value.trim(),ateco:$('ateco').value.trim(),email:$('email').value.trim(),pec:$('pec').value.trim(),telefono:$('telefono').value.trim(),coeff:Number($('coeff').value||40),aliquotaImposta:Number($('aliquotaImposta').value||15),tipoInps:$('tipoInps').value,riduzione35:$('riduzione35').value==='si',noteAttivita:$('noteAttivita').value.trim()};}
+function fillSettings(){Object.entries(state.settings||{}).forEach(([k,v])=>{if($(k)) $(k).value=v;});}
+function calcInps(reddito,tipo,rid35){if(tipo==='zero') return 0; const minRed=18808; const aliq=tipo==='commercianti'?0.2448:0.24; const min=tipo==='commercianti'?4611.64:4521.36; let tot=reddito<=0?0:(reddito<=minRed?min:min+((reddito-minRed)*aliq)); if(rid35) tot*=0.65; return tot;}
+function daysInStock(car){const start=car.buyDate?new Date(car.buyDate):null; const end=car.sellDate?new Date(car.sellDate):new Date(); if(!start) return 0; return Math.max(0, Math.round((end-start)/(1000*60*60*24)));}
+function totalCarCosts(c){return Number(c.buyPrice||0)+Number(c.passaggio||0)+Number(c.riparazioni||0)+Number(c.carburante||0)+Number(c.altroCosto||0);}
+function carMargin(c){return Number(c.sellPrice||0)-totalCarCosts(c);}
+function metrics(){const s=collectSettings(); const ricavi=state.cars.reduce((a,c)=>a+Number(c.sellPrice||0),0); const costiReal=state.cars.reduce((a,c)=>a+totalCarCosts(c),0)+Number(s.speseCommercialista||0); const redditoForf=ricavi*((Number(s.coeff||40))/100); const inps=calcInps(redditoForf,s.tipoInps||'commercianti',!!s.riduzione35); const base=Math.max(0,redditoForf-inps); const imposta=base*((Number(s.aliquotaImposta||15))/100); const spendibile=ricavi-costiReal-inps-imposta; const capitale=Number(s.capitaleIniziale||0)+spendibile; const soldCars=state.cars.filter(c=>Number(c.sellPrice||0)>0); const avgMargin=soldCars.length?soldCars.reduce((a,c)=>a+carMargin(c),0)/soldCars.length:0; let soglia='Dentro soglia'; if(ricavi>=51000 && ricavi<68000) soglia='Attenzione: oltre 60%'; if(ricavi>=68000 && ricavi<76500) soglia='Attenzione: oltre 80%'; if(ricavi>=76500 && ricavi<85000) soglia='Quasi al limite'; if(ricavi>=85000) soglia='Soglia superata'; return {s,ricavi,costiReal,redditoForf,inps,base,imposta,spendibile,capitale,avgMargin,soglia,safeBudget:Math.max(0,capitale*0.65)};}
+function updateThemeThumb(){ $('themeThumb').textContent = document.documentElement.dataset.theme==='dark' ? '🌙' : '☀️'; }
+function openPanel(id){$('drawer').classList.add('open'); document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); if(!$(id)) id='dashboardPanel'; $(id).classList.add('active'); document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.panel===id)); const routeMap={dashboardPanel:'/dashboard',autoPanel:'/auto',clientsPanel:'/clienti',deadlinesPanel:'/scadenze',docsPanel:'/documenti',linksPanel:'/link-utili',forfPanel:'/forfettario',ordPanel:'/ordinario',advicePanel:'/consigli',aiPanel:'/ai',settingsPanel:'/impostazioni'}; $('routePath').textContent=routeMap[id]||'/dashboard'; try{location.hash=(routeMap[id]||'/dashboard').replace('/','#/');}catch(e){}}
+function setOptionsClients(){const sel=$('clientLink'); const current=sel.value; sel.innerHTML='<option value="">Nessuno</option>'+state.clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join(''); if(current) sel.value=current;}
+
+function readAsDataURL(file){return new Promise((resolve,reject)=>{const fr=new FileReader(); fr.onload=()=>resolve(fr.result); fr.onerror=reject; fr.readAsDataURL(file);});}
+async function onCoverChange(e){const file=e.target.files[0]; if(!file){state.pendingCover=''; return;} state.pendingCover=await readAsDataURL(file);}
+function resetCarForm(){state.editingCar=null; state.pendingCover=''; $('coverUpload').value=''; ['carName','carPlate','buyDate','sellDate','carNotes'].forEach(id=>$(id).value=''); ['buyPrice','sellPrice','targetPrice','minPrice','passaggio','riparazioni','carburante','altroCosto'].forEach(id=>$(id).value='0'); ['carStatus','carSource','saleChannel'].forEach(id=>$(id).selectedIndex=0); $('clientLink').value=''; $('saveCar').textContent='Salva auto';}
+function closeSaleQuick(){ $('carStatus').value='Venduta'; if(!$('sellDate').value) $('sellDate').value = new Date().toISOString().slice(0,10); }
+function collectCar(){return {id:state.editingCar||uid(),name:$('carName').value.trim()||'Auto senza nome',plate:$('carPlate').value.trim(),status:$('carStatus').value,source:$('carSource').value,buyDate:$('buyDate').value,sellDate:$('sellDate').value,buyPrice:Number($('buyPrice').value||0),sellPrice:Number($('sellPrice').value||0),targetPrice:Number($('targetPrice').value||0),minPrice:Number($('minPrice').value||0),passaggio:Number($('passaggio').value||0),riparazioni:Number($('riparazioni').value||0),carburante:Number($('carburante').value||0),altroCosto:Number($('altroCosto').value||0),saleChannel:$('saleChannel').value,clientId:$('clientLink').value,notes:$('carNotes').value.trim(),cover:state.pendingCover||((state.cars.find(x=>x.id===state.editingCar)||{}).cover||''),updatedAt:new Date().toLocaleString('it-IT')};}
+function saveCar(){const car=collectCar(); const snap={...car,snapshotAt:new Date().toLocaleString('it-IT')}; const idx=state.cars.findIndex(c=>c.id===car.id); if(idx>=0){const prev=state.cars[idx]; car.history=[...(prev.history||[]),snap]; state.cars[idx]=car;} else {car.history=[snap]; state.cars.unshift(car);} persist(); renderAll(); resetCarForm();}
+function editCar(id){const c=state.cars.find(x=>x.id===id); if(!c) return; state.editingCar=id; state.pendingCover=c.cover||''; $('carName').value=c.name||''; $('carPlate').value=c.plate||''; $('carStatus').value=c.status||'Da visionare'; $('carSource').value=c.source||'Privato'; $('buyDate').value=c.buyDate||''; $('sellDate').value=c.sellDate||''; $('buyPrice').value=c.buyPrice||0; $('sellPrice').value=c.sellPrice||0; $('targetPrice').value=c.targetPrice||0; $('minPrice').value=c.minPrice||0; $('passaggio').value=c.passaggio||0; $('riparazioni').value=c.riparazioni||0; $('carburante').value=c.carburante||0; $('altroCosto').value=c.altroCosto||0; $('saleChannel').value=c.saleChannel||'Subito'; $('clientLink').value=c.clientId||''; $('carNotes').value=c.notes||''; $('saveCar').textContent='Aggiorna auto'; openPanel('autoPanel');}
+function duplicateCar(id){const c=state.cars.find(x=>x.id===id); if(!c) return; const copy={...c,id:uid(),plate:'',status:'Da visionare',sellDate:'',sellPrice:0,history:[]}; state.cars.unshift(copy); persist(); renderAll();}
+function deleteCar(id){state.cars=state.cars.filter(c=>c.id!==id); persist(); renderAll();}
+
+function resetClientForm(){state.editingClient=null; ['clientName','clientPhone','clientEmail','clientInterest','clientFollow','clientNotes'].forEach(id=>$(id).value=''); $('clientBudget').value='0'; ['clientStatus','clientSource'].forEach(id=>$(id).selectedIndex=0); $('saveClient').textContent='Salva cliente';}
+function collectClient(){return {id:state.editingClient||uid(),name:$('clientName').value.trim()||'Cliente senza nome',phone:$('clientPhone').value.trim(),email:$('clientEmail').value.trim(),budget:Number($('clientBudget').value||0),interest:$('clientInterest').value.trim(),status:$('clientStatus').value,follow:$('clientFollow').value,source:$('clientSource').value,notes:$('clientNotes').value.trim(),updatedAt:new Date().toLocaleString('it-IT')};}
+function saveClient(){const item=collectClient(); const idx=state.clients.findIndex(c=>c.id===item.id); if(idx>=0) state.clients[idx]=item; else state.clients.unshift(item); persist(); renderAll(); resetClientForm();}
+function editClient(id){const c=state.clients.find(x=>x.id===id); if(!c) return; state.editingClient=id; $('clientName').value=c.name||''; $('clientPhone').value=c.phone||''; $('clientEmail').value=c.email||''; $('clientBudget').value=c.budget||0; $('clientInterest').value=c.interest||''; $('clientStatus').value=c.status||'Nuovo'; $('clientFollow').value=c.follow||''; $('clientSource').value=c.source||'Subito'; $('clientNotes').value=c.notes||''; $('saveClient').textContent='Aggiorna cliente'; openPanel('clientsPanel');}
+function deleteClient(id){state.clients=state.clients.filter(c=>c.id!==id); state.cars=state.cars.map(c=>c.clientId===id?{...c,clientId:''}:c); persist(); renderAll();}
+
+function resetDeadlineForm(){state.editingDeadline=null; ['deadlineTitle','deadlineDate','deadlineLink','deadlineNotes'].forEach(id=>$(id).value=''); ['deadlineCategory','deadlinePriority','deadlineStatus'].forEach(id=>$(id).selectedIndex=0); $('saveDeadline').textContent='Salva scadenza';}
+function collectDeadline(){return {id:state.editingDeadline||uid(),title:$('deadlineTitle').value.trim()||'Scadenza senza titolo',date:$('deadlineDate').value,category:$('deadlineCategory').value,priority:$('deadlinePriority').value,status:$('deadlineStatus').value,link:$('deadlineLink').value.trim(),notes:$('deadlineNotes').value.trim(),updatedAt:new Date().toLocaleString('it-IT')};}
+function saveDeadline(){const item=collectDeadline(); const idx=state.deadlines.findIndex(d=>d.id===item.id); if(idx>=0) state.deadlines[idx]=item; else state.deadlines.unshift(item); persist(); renderAll(); resetDeadlineForm();}
+function editDeadline(id){const d=state.deadlines.find(x=>x.id===id); if(!d) return; state.editingDeadline=id; $('deadlineTitle').value=d.title||''; $('deadlineDate').value=d.date||''; $('deadlineCategory').value=d.category||'Fiscale'; $('deadlinePriority').value=d.priority||'Alta'; $('deadlineStatus').value=d.status||'Aperta'; $('deadlineLink').value=d.link||''; $('deadlineNotes').value=d.notes||''; $('saveDeadline').textContent='Aggiorna scadenza'; openPanel('deadlinesPanel');}
+function deleteDeadline(id){state.deadlines=state.deadlines.filter(d=>d.id!==id); persist(); renderAll();}
+function toggleDeadlineDone(id){state.deadlines=state.deadlines.map(d=>d.id===id?{...d,status:d.status==='Fatta'?'Aperta':'Fatta'}:d); persist(); renderAll();}
+
+async function handleDocs(files){const tag=$('docTag').value.trim(); const type=$('docType').value; for(const f of [...files]){let preview=''; let image=''; if(f.type.startsWith('image/')){image=await readAsDataURL(f);} else if(/(text|json|csv|html)/i.test(f.type) || /\.(txt|csv|json|html)$/i.test(f.name)){try{const txt=await f.text(); preview=txt.slice(0,260).replace(/\s+/g,' ').trim();}catch(e){}} state.docs.unshift({id:uid(),name:f.name,tag,docType:type,size:f.size,preview,image,createdAt:new Date().toLocaleString('it-IT')});} $('docUpload').value=''; $('docTag').value=''; persist(); renderAll();}
+function clearDocs(){if(confirm('Vuoi svuotare tutto l\'archivio documenti?')){state.docs=[]; persist(); renderAll();}}
+
+function renderCars(){const box=$('carList'); const q=$('carSearch').value.trim().toLowerCase(); const f=$('carFilter').value; const filtered=state.cars.filter(c=>{const hay=[c.name,c.plate,c.notes,c.status,c.source,c.saleChannel].join(' ').toLowerCase(); return (!q || hay.includes(q)) && (!f || c.status===f);}); if(!filtered.length){box.innerHTML='<div class="item"><div class="muted">Nessuna auto trovata.</div></div>'; return;} box.innerHTML=filtered.map(c=>{const margin=carMargin(c); const client=state.clients.find(x=>x.id===c.clientId); const color=margin>1000?'green':margin>=0?'orange':'red'; const history=(c.history||[]).slice(-3).reverse().map(h=>`<div class="tl-item">${h.snapshotAt}: acquisto ${euro(h.buyPrice)}, vendita ${euro(h.sellPrice)}, costi ${euro(Number(h.passaggio||0)+Number(h.riparazioni||0)+Number(h.carburante||0)+Number(h.altroCosto||0))}</div>`).join(''); return `<div class="item"><div class="item-top"><div style="display:flex;gap:12px;align-items:flex-start">${c.cover?`<img class="cover" src="${c.cover}" alt="copertina auto">`:''}<div><h4>${c.name}</h4><p>${c.plate||'Nessuna targa'} · ${c.status} · ${c.source}</p><div class="status ${color}">${margin>=0?'Margine positivo':'Margine negativo'} · ${euro(margin)}</div></div></div><div class="actions" style="margin-top:0"><button class="btn secondary" onclick="editCar('${c.id}')">Modifica</button><button class="btn secondary" onclick="duplicateCar('${c.id}')">Duplica</button><button class="btn secondary" onclick="closeCarSale('${c.id}')">Chiudi</button><button class="btn secondary" onclick="deleteCar('${c.id}')">Elimina</button></div></div><div class="item-meta"><div><div class="small">Costo totale</div><strong>${euro(totalCarCosts(c))}</strong></div><div><div class="small">Prezzo vendita</div><strong>${euro(c.sellPrice)}</strong></div><div><div class="small">Giorni fermo</div><strong>${daysInStock(c)}</strong></div><div><div class="small">Prezzo target</div><strong>${euro(c.targetPrice)}</strong></div><div><div class="small">Canale vendita</div><strong>${c.saleChannel}</strong></div><div><div class="small">Cliente</div><strong>${client?client.name:'Nessuno'}</strong></div></div><div class="timeline">${history||'<div class="tl-item">Nessuno storico disponibile.</div>'}${c.notes?`<div class="tl-item">Note: ${c.notes}</div>`:''}</div></div>`;}).join('');}
+function closeCarSale(id){const c=state.cars.find(x=>x.id===id); if(!c) return; c.status='Venduta'; if(!c.sellDate) c.sellDate=new Date().toISOString().slice(0,10); c.updatedAt=new Date().toLocaleString('it-IT'); c.history=[...(c.history||[]), {...c, snapshotAt:new Date().toLocaleString('it-IT')}]; persist(); renderAll();}
+window.editCar=editCar; window.duplicateCar=duplicateCar; window.deleteCar=deleteCar; window.closeCarSale=closeCarSale;
+
+function renderClients(){const box=$('clientList'); if(!state.clients.length){box.innerHTML='<div class="item"><div class="muted">Nessun cliente inserito.</div></div>'; return;} box.innerHTML=state.clients.map(c=>`<div class="item"><div class="item-top"><div><h4>${c.name}</h4><p>${c.phone||'Senza telefono'} · ${c.status} · ${c.source}</p></div><div class="actions" style="margin-top:0"><button class="btn secondary" onclick="editClient('${c.id}')">Modifica</button><button class="btn secondary" onclick="deleteClient('${c.id}')">Elimina</button></div></div><div class="item-meta"><div><div class="small">Budget</div><strong>${euro(c.budget)}</strong></div><div><div class="small">Interesse</div><strong>${c.interest||'—'}</strong></div><div><div class="small">Follow-up</div><strong>${fmtDate(c.follow)}</strong></div></div>${c.notes?`<div class="timeline"><div class="tl-item">${c.notes}</div></div>`:''}</div>`).join(''); const today = new Date().toISOString().slice(0,10); const due = state.clients.filter(c=>c.follow && c.follow<=today && c.status!=='Chiuso' && c.status!=='Perso'); $('clientReminderList').innerHTML = due.length ? due.map(c=>`<div class="item"><strong>${c.name}</strong><div class="small">Follow-up da fare · ${fmtDate(c.follow)}</div></div>`).join('') : '<div class="item"><div class="muted">Nessun follow-up urgente.</div></div>';}
+window.editClient=editClient; window.deleteClient=deleteClient;
+
+function renderDeadlines(){const box=$('deadlineList'); const sorted=[...state.deadlines].sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999')); if(!sorted.length){box.innerHTML='<div class="item"><div class="muted">Nessuna scadenza inserita.</div></div>'; $('deadlineSoonList').innerHTML='<div class="item"><div class="muted">Nessuna scadenza vicina.</div></div>'; return;} box.innerHTML=sorted.map(d=>`<div class="item"><div class="item-top"><div><h4>${d.title}</h4><p>${d.category} · ${d.priority} · ${d.status}</p></div><div class="actions" style="margin-top:0"><button class="btn secondary" onclick="editDeadline('${d.id}')">Modifica</button><button class="btn secondary" onclick="toggleDeadlineDone('${d.id}')">Fatta</button><button class="btn secondary" onclick="deleteDeadline('${d.id}')">Elimina</button></div></div><div class="item-meta"><div><div class="small">Data</div><strong>${fmtDate(d.date)}</strong></div><div><div class="small">Collegata a</div><strong>${d.link||'—'}</strong></div><div><div class="small">Aggiornata</div><strong>${d.updatedAt}</strong></div></div>${d.notes?`<div class="timeline"><div class="tl-item">${d.notes}</div></div>`:''}</div>`).join(''); const today=new Date(); const soon=sorted.filter(d=>d.status!=='Fatta' && d.date && ((new Date(d.date)-today)/(1000*60*60*24))<=7).slice(0,6); $('deadlineSoonList').innerHTML=soon.length?soon.map(d=>`<div class="item"><strong>${d.title}</strong><div class="small">${fmtDate(d.date)} · ${d.priority}</div></div>`).join(''):'<div class="item"><div class="muted">Nessuna scadenza nei prossimi 7 giorni.</div></div>';}
+window.editDeadline=editDeadline; window.deleteDeadline=deleteDeadline; window.toggleDeadlineDone=toggleDeadlineDone;
+
+function renderDocs(){const box=$('docList'); if(!state.docs.length){box.innerHTML='<div class="item"><div class="muted">Nessun documento caricato.</div></div>'; return;} box.innerHTML=state.docs.map(d=>`<div class="upload-item">${d.image?`<img class="cover" src="${d.image}" alt="anteprima documento" style="margin-bottom:8px">`:''}<strong>${d.tag?d.tag+' · ':''}${d.name}</strong><div class="small">${d.docType} · ${d.createdAt}</div>${d.preview?`<div class="small" style="margin-top:6px">${d.preview}</div>`:''}</div>`).join('');}
+
+function renderHome(){const m=metrics(); $('dashRicavi').textContent=euro(m.ricavi); $('dashReddito').textContent=euro(m.redditoForf); $('dashInps').textContent=euro(m.inps); $('dashImposta').textContent=euro(m.imposta); $('dashBase').textContent=euro(m.base); $('dashCoeff').textContent=`${m.s.coeff||40}%`; $('dashAliquota').textContent=`${m.s.aliquotaImposta||15}%`; $('dashSoglia').textContent=m.soglia; $('outCosti').textContent=euro(m.costiReal); $('outSpendibile').textContent=euro(m.spendibile); $('outCapitale').textContent=euro(m.capitale); $('outCount').textContent=state.cars.length; $('avgMargin').textContent=euro(m.avgMargin); $('outClients').textContent=state.clients.length; $('outDeadlines').textContent=state.deadlines.filter(d=>d.status!=='Fatta').length; $('safeBudget').textContent=euro(m.safeBudget);
+  const alerts=[]; if(m.ricavi>=76500 && m.ricavi<85000) alerts.push('Sei vicino alla soglia: controlla bene ogni nuova vendita.'); if(m.ricavi>=85000) alerts.push('Hai superato la soglia: verifica subito la situazione con attenzione.'); if(m.capitale<0) alerts.push('Il capitale riutilizzabile è negativo: blocca nuovi acquisti impulsivi.'); if(state.deadlines.some(d=>d.status!=='Fatta' && d.date && d.date<=new Date().toISOString().slice(0,10))) alerts.push('Hai scadenze scadute o in giornata da guardare subito.'); if(state.clients.some(c=>c.follow && c.follow<=new Date().toISOString().slice(0,10) && !['Chiuso','Perso'].includes(c.status))) alerts.push('Hai clienti da ricontattare oggi.'); if(!alerts.length) alerts.push('Situazione sotto controllo: aggiorna i dati e continua a monitorare margini e scadenze.'); $('alertList').innerHTML=alerts.map(a=>`<div class="item"><div class="small">Alert</div><strong>${a}</strong></div>`).join('');
+  const grouped={}; state.cars.forEach(c=>{const key=(c.name||'').split(' ').slice(0,2).join(' '); if(!key) return; grouped[key]=(grouped[key]||0)+carMargin(c);}); const tops=Object.entries(grouped).sort((a,b)=>b[1]-a[1]).slice(0,4); $('topModels').innerHTML=tops.length?tops.map(([k,v])=>`<div class="item"><strong>${k}</strong><div class="small">Margine totale ${euro(v)}</div></div>`).join(''):'<div class="item"><div class="muted">Ancora pochi dati per una classifica.</div></div>';
+  const todos=[]; const nextDeadline=[...state.deadlines].filter(d=>d.status!=='Fatta'&&d.date).sort((a,b)=>a.date.localeCompare(b.date))[0]; if(nextDeadline) todos.push(`Prima mossa: ${nextDeadline.title} entro ${fmtDate(nextDeadline.date)}.`); const hotClient=state.clients.find(c=>['Caldo','In trattativa','Appuntamento'].includes(c.status)); if(hotClient) todos.push(`Ricontatta ${hotClient.name}: trattativa ${hotClient.status.toLowerCase()}.`); const stuck=state.cars.filter(c=>!['Venduta','Consegnata'].includes(c.status) && daysInStock(c)>30).sort((a,b)=>daysInStock(b)-daysInStock(a))[0]; if(stuck) todos.push(`Controlla ${stuck.name}: ferma da ${daysInStock(stuck)} giorni.`); if(m.capitale>0) todos.push(`Budget prudente per prossimo acquisto: circa ${euro(m.safeBudget)}.`); if(!todos.length) todos.push('Inserisci auto, clienti e scadenze per vedere le prossime mosse.'); $('quickTodos').innerHTML=todos.map(t=>`<div class="item"><strong>${t}</strong></div>`).join('');
+}
+function renderToday(){const m=metrics(); const hotClients=state.clients.filter(c=>['Caldo','In trattativa','Appuntamento'].includes(c.status)).slice(0,4); const stuckCars=state.cars.filter(c=>!['Venduta','Consegnata'].includes(c.status) && daysInStock(c)>20).sort((a,b)=>daysInStock(b)-daysInStock(a)).slice(0,4); const openDead=state.deadlines.filter(d=>d.status!=='Fatta').sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999')).slice(0,4); $('todayFocus').innerHTML = [`<div class="row"><span>Guadagno spendibile</span><span class="value-right">${euro(m.spendibile)}</span></div>`,`<div class="row"><span>Capitale riutilizzabile</span><span class="value-right">${euro(m.capitale)}</span></div>`,`<div class="row"><span>Budget prudente</span><span class="value-right">${euro(m.safeBudget)}</span></div>`,`<div class="row"><span>Stato soglia</span><span class="value-right">${m.soglia}</span></div>`].join(''); const actions=[]; if(openDead[0]) actions.push(`<div class="row"><span>Prima scadenza</span><span class="value-right">${openDead[0].title}</span></div>`); if(hotClients[0]) actions.push(`<div class="row"><span>Cliente da seguire</span><span class="value-right">${hotClients[0].name}</span></div>`); if(stuckCars[0]) actions.push(`<div class="row"><span>Auto da sbloccare</span><span class="value-right">${stuckCars[0].name}</span></div>`); actions.push(`<div class="row"><span>Obiettivo del giorno</span><span class="value-right">Aggiorna trattative e margini</span></div>`); $('todayActions').innerHTML = actions.join(''); $('todayClients').innerHTML = hotClients.length ? hotClients.map(c=>`<div class="item"><strong>${c.name}</strong><div class="small">${c.status} · ${c.interest||'interesse non indicato'}</div></div>`).join('') : '<div class="item"><div class="muted">Nessun cliente caldo al momento.</div></div>'; $('todayCars').innerHTML = stuckCars.length ? stuckCars.map(c=>`<div class="item"><strong>${c.name}</strong><div class="small">Ferma da ${daysInStock(c)} giorni · ${c.status}</div></div>`).join('') : '<div class="item"><div class="muted">Nessuna auto ferma da troppo tempo.</div></div>'; $('todayCash').innerHTML = [`<div class="item"><strong>Puoi reinvestire con prudenza circa ${euro(m.safeBudget)}</strong><div class="small">Mantieni sempre margine per imprevisti, pratiche e preparazione.</div></div>`,`<div class="item"><strong>Controlla il margine reale per auto</strong><div class="small">Non guardare solo il venduto: il capitale si libera davvero quando il margine resta sano.</div></div>`].join('');}
+
+function routeToPanel(){const h=(location.hash||'#/dashboard').replace('#',''); const panelMap={'/dashboard':'dashboardPanel','/auto':'autoPanel','/clienti':'clientsPanel','/scadenze':'deadlinesPanel','/documenti':'docsPanel','/link-utili':'linksPanel','/forfettario':'forfPanel','/ordinario':'ordPanel','/consigli':'advicePanel','/ai':'aiPanel','/impostazioni':'settingsPanel'}; return panelMap[h]||'dashboardPanel';}
+function renderOrdinary(){const m=metrics(); const vatSales=Number($('ordVatSales')?.value||22)/100; const vatCosts=Number($('ordVatCosts')?.value||22)/100; const extra=Number($('ordDeductExtra')?.value||0); const irpef=Number($('ordIrpefRate')?.value||23)/100; const ricavi=m.ricavi; const costi=m.costiReal+extra; const ivaVendite=ricavi*vatSales; const ivaCosti=costi*vatCosts; const saldoIva=Math.max(0, ivaVendite-ivaCosti); const reddito=Math.max(0, ricavi-costi); const irpefStim=reddito*irpef; const netto=ricavi-costi-saldoIva-irpefStim; if($('ordRicavi')) $('ordRicavi').textContent=euro(ricavi); if($('ordCosti')) $('ordCosti').textContent=euro(costi); if($('ordIvaVendite')) $('ordIvaVendite').textContent=euro(ivaVendite); if($('ordIvaCosti')) $('ordIvaCosti').textContent=euro(ivaCosti); if($('ordSaldoIva')) $('ordSaldoIva').textContent=euro(saldoIva); if($('ordReddito')) $('ordReddito').textContent=euro(reddito); if($('ordIrpef')) $('ordIrpef').textContent=euro(irpefStim); if($('ordNetto')) $('ordNetto').textContent=euro(netto);}
+
+function renderSimulator(){const total=Number($('simBuy').value||0)+Number($('simPass').value||0)+Number($('simRep').value||0)+Number($('simExtra').value||0); const margin=Number($('simSell').value||0)-total; $('simTotal').textContent=euro(total); $('simMargin').textContent=euro(margin); $('simVerdict').textContent = margin>=1500?'Molto interessante':margin>=500?'Valutabile':margin>=0?'Margine stretto':'Da evitare';}
+function askAi(){const q=$('aiQuestion').value.trim().toLowerCase(); if(!q){$('aiAnswer').textContent='Scrivi prima una domanda.'; return;} const m=metrics(); const sold=[...state.cars].sort((a,b)=>carMargin(b)-carMargin(a)); const best=sold[0]; const worst=sold[sold.length-1]; const dueClients=state.clients.filter(c=>c.follow && c.follow<=new Date().toISOString().slice(0,10) && !['Chiuso','Perso'].includes(c.status)); const openDead=state.deadlines.filter(d=>d.status!=='Fatta').length; let ans='';
+  if(q.includes('reinvest')||q.includes('budget')||q.includes('comprare')) ans=`Capitale riutilizzabile: ${euro(m.capitale)}. Budget prudente consigliato: ${euro(m.safeBudget)}.\n\nSe vuoi restare prudente, non usare tutto il capitale: lascia sempre margine per passaggi, ripristino e imprevisti.`;
+  else if(q.includes('peggiore')||q.includes('migliore')||q.includes('margine')) ans=`Auto migliore: ${best?best.name+' con margine '+euro(carMargin(best)):'nessuna'} .\nAuto peggiore: ${worst?worst.name+' con margine '+euro(carMargin(worst)):'nessuna'} .\n\nGuarda soprattutto le auto con costi extra alti o ferme troppo a lungo.`;
+  else if(q.includes('oggi')||q.includes('priorità')||q.includes('fare')) ans=`Priorità di oggi:\n1. ${dueClients[0]?'Ricontatta '+dueClients[0].name:'Controlla follow-up clienti.'}\n2. ${openDead?`Hai ${openDead} scadenze aperte da gestire.`:'Nessuna scadenza aperta urgente.'}\n3. ${state.cars.find(c=>!['Venduta','Consegnata'].includes(c.status) && daysInStock(c)>30)?'Guarda le auto ferme da più di 30 giorni.':'Aggiorna note e stato delle trattative.'}`;
+  else if(q.includes('soglia')||q.includes('forfett')) ans=`Ricavi attuali: ${euro(m.ricavi)}. Stato soglia: ${m.soglia}.\n\nControlla bene ogni nuova vendita se sei vicino al limite e usa la home come cruscotto rapido.`;
+  else if(q.includes('client')||q.includes('richiama')||q.includes('follow')) ans=`Clienti da ricontattare oggi: ${dueClients.length}.\n\n${dueClients.length?dueClients.map(c=>'- '+c.name+' · '+(c.interest||'interesse non indicato')).join('\n'):'Nessun follow-up urgente segnato.'}`;
+  else if(q.includes('document')||q.includes('file')) ans=`Hai ${state.docs.length} documenti salvati.\n\nUsa etichette chiare e fai un export JSON periodico per non perdere il tuo archivio.`;
+  else ans=`Situazione attuale:\nRicavi ${euro(m.ricavi)}\nCosti reali ${euro(m.costiReal)}\nGuadagno spendibile ${euro(m.spendibile)}\nCapitale riutilizzabile ${euro(m.capitale)}\nScadenze aperte ${openDead}\nClienti attivi ${state.clients.length}\n\nSe vuoi una risposta più precisa chiedimi budget, margini, clienti da ricontattare o priorità di oggi.`;
+  $('aiAnswer').textContent=ans;
+}
+function copyPrompt(){const m=metrics(); const txt=`Sei un assistente per una rivendita auto. Analizza questi dati e rispondi in italiano semplice. Ricavi ${m.ricavi}, costi reali ${m.costiReal}, reddito forfettario ${m.redditoForf}, INPS ${m.inps}, imposta ${m.imposta}, capitale riutilizzabile ${m.capitale}. Auto: ${state.cars.map(c=>`${c.name} margine ${carMargin(c)} stato ${c.status}`).join(' | ')||'nessuna'}. Clienti: ${state.clients.map(c=>`${c.name} stato ${c.status} follow ${c.follow||'-'}`).join(' | ')||'nessuno'}. Scadenze: ${state.deadlines.map(d=>`${d.title} ${d.date||'-'} ${d.status}`).join(' | ')||'nessuna'}. Documenti: ${state.docs.map(d=>`${d.name} ${d.preview||''}`).join(' | ')||'nessuno'}. Domanda: ${$('aiQuestion').value.trim()||'Riassumi situazione e priorità.'}`; navigator.clipboard.writeText(txt); $('aiAnswer').textContent='Prompt avanzato copiato. Puoi usarlo in un assistente esterno quando vuoi un parere più articolato.'; }
+function toCsv(rows){if(!rows.length) return ''; const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))]; return [keys.join(','), ...rows.map(r=>keys.map(k=>JSON.stringify(r[k]??'')).join(','))].join('\n');}
+function downloadFile(name,content,type='text/plain'){const blob=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),500);}
+function exportJson(){downloadFile('AutoBroskiGroupV5-backup.json', JSON.stringify({cars:state.cars,clients:state.clients,deadlines:state.deadlines,docs:state.docs,settings:collectSettings()},null,2), 'application/json');}
+function importJsonFile(file){const fr=new FileReader(); fr.onload=()=>{try{const d=JSON.parse(fr.result); state.cars=d.cars||[]; state.clients=d.clients||[]; state.deadlines=d.deadlines||[]; state.docs=d.docs||[]; state.settings=d.settings||{}; fillSettings(); persist(); renderAll(); alert('Backup importato.');}catch(e){alert('JSON non valido.');}}; fr.readAsText(file);}
+function exportCarsCsv(){downloadFile('AutoBroskiGroupV5-auto.csv', toCsv(state.cars.map(c=>({...c, totalCosts:totalCarCosts(c), margin:carMargin(c), daysInStock:daysInStock(c)}))), 'text/csv');}
+function exportClientsCsv(){downloadFile('AutoBroskiGroupV5-clienti.csv', toCsv(state.clients), 'text/csv');}
+function wipeAll(){if(confirm('Vuoi cancellare tutti i dati della mini app?')){localStorage.removeItem('abg_v5'); location.reload();}}
+function renderAll(){setOptionsClients(); renderHome(); renderToday(); renderCars(); renderClients(); renderDeadlines(); renderDocs(); renderOrdinary(); renderSimulator(); persist();}
+
+$('openDrawer').addEventListener('click', ()=>openPanel('dashboardPanel')); $('closeDrawer').addEventListener('click', ()=>$('drawer').classList.remove('open'));
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>openPanel(b.dataset.panel)));
+$('themeSwitch').addEventListener('click', ()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'; updateThemeThumb(); persist();});
+document.querySelectorAll('.tooltip').forEach(t=>t.addEventListener('click',e=>{e.preventDefault(); t.classList.toggle('open');}));
+$('saveCar').addEventListener('click', saveCar); $('resetCar').addEventListener('click', resetCarForm); $('closeSaleBtn').addEventListener('click', closeSaleQuick); $('coverUpload').addEventListener('change', onCoverChange); $('carSearch').addEventListener('input', renderCars); $('carFilter').addEventListener('change', renderCars);
+$('saveClient').addEventListener('click', saveClient); $('resetClient').addEventListener('click', resetClientForm);
+$('saveDeadline').addEventListener('click', saveDeadline); $('resetDeadline').addEventListener('click', resetDeadlineForm);
+$('docUpload').addEventListener('change', e=>handleDocs(e.target.files)); $('clearDocs').addEventListener('click', clearDocs);
+$('askAi').addEventListener('click', askAi); $('copyPrompt').addEventListener('click', copyPrompt);
+$('exportJson').addEventListener('click', exportJson); $('importJsonBtn').addEventListener('click', ()=>$('importJson').click()); $('importJson').addEventListener('change', e=>e.target.files[0]&&importJsonFile(e.target.files[0])); $('exportCarsCsv').addEventListener('click', exportCarsCsv); $('exportClientsCsv').addEventListener('click', exportClientsCsv); $('wipeAll').addEventListener('click', wipeAll);
+['simBuy','simSell','simPass','simRep','simExtra','simDays'].forEach(id=>$(id).addEventListener('input', renderSimulator)); ['ordVatSales','ordVatCosts','ordDeductExtra','ordIrpefRate'].forEach(id=>$(id)&&$(id).addEventListener('input', renderOrdinary));
+document.querySelectorAll('#settingsPanel input,#settingsPanel select,#settingsPanel textarea').forEach(el=>el.addEventListener('input', renderAll));
+
+hydrate(); fillSettings(); updateThemeThumb(); renderAll(); openPanel(routeToPanel()); window.addEventListener('hashchange', ()=>openPanel(routeToPanel()));
+</script>
+</body>
+</html>
