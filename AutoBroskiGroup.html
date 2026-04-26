@@ -544,11 +544,8 @@ async function startApp() {
     fillSettings(); 
     updateThemeThumb(); 
     renderAll(); // Nome corretto della tua funzione di rendering
-    openPanel(routeToPanel());
-}
-
+    openPanel(routeToPanel());}
 startApp(); // Esegue la sequenza di avvio
-
 window.addEventListener('hashchange', () => openPanel(routeToPanel()));
 </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
