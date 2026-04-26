@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>AutoBroskiGroup</title>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d0f12">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="badge" aria-hidden="true"><img src="logoapp.png" alt="Logo AutoBroskiGroup"></div>
+      <div><h1>AutoBroskiGroup</h1><p>Controllo attività · rivendita auto · strategia quotidiana</p></div>
+    </div>
+    <div class="top-actions">
+      <button class="theme-switch" id="themeSwitch" aria-label="Cambia tema"><span class="thumb" id="themeThumb">🌙</span></button>
+      <button class="menu-btn" id="openDrawer">☰</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="tag">Gestione intelligente attività</div>
+    <h2>Tieni sotto controllo guadagni, spese, clienti e prossime mosse per far crescere la tua attività senza perdere tempo</h2>
+    <p>Questa schermata deve aiutarti a capire subito se stai lavorando bene, quanto puoi reinvestire, dove stai guadagnando davvero e su cosa ti conviene concentrarti oggi per gestire meglio la tua rivendita.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <div class="section-title"><h3>Fiscale e numeri</h3><div class="pill">Home</div></div>
+      <div class="stats">
+        <div class="kpi blue"><div class="label">Ricavi totali</div><div class="value" id="dashRicavi">€ 0,00</div></div>
+        <div class="kpi blue"><div class="label">Reddito forfettario</div><div class="value" id="dashReddito">€ 0,00</div></div>
+        <div class="kpi orange"><div class="label">Contributi INPS</div><div class="value" id="dashInps">€ 0,00</div></div>
+        <div class="kpi orange"><div class="label">Imposta stimata</div><div class="value" id="dashImposta">€ 0,00</div></div>
+      </div>
+      <div class="rows">
+        <div class="row"><span>Base imponibile</span><span class="value-right" id="dashBase">€ 0,00</span></div>
+        <div class="row"><span>Coeff. redditività</span><span class="value-right" id="dashCoeff">40%</span></div>
+        <div class="row"><span>Aliquota imposta</span><span class="value-right" id="dashAliquota">15%</span></div>
+        <div class="row"><span>Stato soglia</span><span class="value-right" id="dashSoglia">Dentro soglia</span></div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="section-title"><h3>Controllo reale</h3><div class="pill">Operatività</div></div>
+      <div class="stats">
+        <div class="kpi red"><div class="label">Costi reali</div><div class="value" id="outCosti">€ 0,00</div></div>
+        <div class="kpi green"><div class="label">Guadagno spendibile</div><div class="value" id="outSpendibile">€ 0,00</div></div>
+        <div class="kpi green"><div class="label">Capitale riutilizzabile</div><div class="value" id="outCapitale">€ 0,00</div></div>
+        <div class="kpi blue"><div class="label">Auto registrate</div><div class="value" id="outCount">0</div></div>
+      </div>
+      <div class="rows">
+        <div class="row"><span>Margine medio per auto</span><span class="value-right" id="avgMargin">€ 0,00</span></div>
+        <div class="row"><span>Cliente attivi</span><span class="value-right" id="outClients">0</span></div>
+        <div class="row"><span>Scadenze aperte</span><span class="value-right" id="outDeadlines">0</span></div>
+        <div class="row"><span>Budget prudente acquisto</span><span class="value-right" id="safeBudget">€ 0,00</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="three">
+    <div class="card">
+      <div class="section-title"><h3>Alert</h3><div class="pill">Subito</div></div>
+      <div class="list" id="alertList"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>Top modelli</h3><div class="pill">Margini</div></div>
+      <div class="list" id="topModels"></div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h3>Da fare</h3><div class="pill">Prossime mosse</div></div>
+      <div class="list" id="quickTodos"></div>
+    </div>
+  </div>
+</div>
+
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div>
+      <strong style="display:block;font-size:1.05rem">AutoBroskiGroup</strong>
+      <div class="small" id="routePath">/dashboard</div>
+    </div>
+    <button class="icon-btn" id="closeDrawer">✕</button>
+  </div>
+  <div class="nav">
+    <button class="active" data-panel="dashboardPanel">Dashboard</button>
+    <button data-panel="autoPanel">Auto</button>
+    <button data-panel="clientsPanel">Clienti</button>
+    <button data-panel="deadlinesPanel">Scadenze</button>
+    <button data-panel="docsPanel">Documenti</button>
+    <button data-panel="linksPanel">Link utili</button>
+    <button data-panel="forfPanel">Forfettario</button>
+    <button data-panel="ordPanel">Ordinario</button>
+    <button data-panel="advicePanel">Consigli</button>
+    <button data-panel="aiPanel">AI</button>
+    <button data-panel="settingsPanel">Impostazioni</button>
+  </div>
+
+  <section class="panel active" id="dashboardPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Dashboard</h3><div class="pill">Percorso</div></div>
+        <div class="rows" id="todayFocus"></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Azioni consigliate</h3><div class="pill">Subito</div></div>
+        <div class="rows" id="todayActions"></div>
+      </div>
+    </div>
+    <div class="three" style="margin-top:16px">
+      <div class="card"><div class="section-title"><h3>Clienti caldi</h3><div class="pill">Follow-up</div></div><div class="list" id="todayClients"></div></div>
+      <div class="card"><div class="section-title"><h3>Auto ferme</h3><div class="pill">Capitale bloccato</div></div><div class="list" id="todayCars"></div></div>
+      <div class="card"><div class="section-title"><h3>Liquidità</h3><div class="pill">Scelta prudente</div></div><div class="list" id="todayCash"></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="autoPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Scheda auto completa</h3><div class="pill">Inserisci e aggiorna</div></div>
+        <div class="form-grid">
+          <div><label for="carName">Nome auto <button type="button" class="tooltip">i<span>Marca e modello dell'auto, utile per riconoscerla subito e leggerla nei report.</span></button></label><input id="carName" type="text" placeholder="Es. Fiat Panda 1.2"></div>
+          <div><label for="carPlate">Targa / codice <button type="button" class="tooltip">i<span>Usa targa o un tuo codice interno per trovarla velocemente.</span></button></label><input id="carPlate" type="text" placeholder="AB123CD"></div>
+          <div><label for="carStatus">Stato auto <button type="button" class="tooltip">i<span>Ti aiuta a capire in che fase si trova la trattativa o la preparazione.</span></button></label><select id="carStatus"><option>Da visionare</option><option>Comprata</option><option>In preparazione</option><option>In vendita</option><option>Venduta</option><option>Consegnata</option></select></div>
+          <div><label for="carSource">Fonte auto <button type="button" class="tooltip">i<span>Segna da dove arriva l'auto per capire quali fonti rendono meglio.</span></button></label><select id="carSource"><option>Privato</option><option>Concessionario</option><option>Asta</option><option>Conoscente</option><option>Altro</option></select></div>
+          <div><label for="buyDate">Data acquisto <button type="button" class="tooltip">i<span>La data di acquisto serve anche per controllare i giorni di fermo.</span></button></label><input id="buyDate" type="date"></div>
+          <div><label for="sellDate">Data vendita <button type="button" class="tooltip">i<span>Inseriscila quando chiudi per tenere corretti ricavi e storico.</span></button></label><input id="sellDate" type="date"></div>
+          <div><label for="buyPrice">Costo acquisto <button type="button" class="tooltip">i<span>Prezzo di acquisto puro del veicolo.</span></button></label><input id="buyPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="sellPrice">Prezzo vendita <button type="button" class="tooltip">i<span>Prezzo finale di vendita o già incassato.</span></button></label><input id="sellPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="targetPrice">Prezzo obiettivo <button type="button" class="tooltip">i<span>Prezzo ideale a cui vorresti vendere.</span></button></label><input id="targetPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="minPrice">Prezzo minimo <button type="button" class="tooltip">i<span>Prezzo sotto il quale non ti conviene scendere.</span></button></label><input id="minPrice" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="passaggio">Pratiche / passaggio <button type="button" class="tooltip">i<span>Costi di pratiche, passaggio o spese simili.</span></button></label><input id="passaggio" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="riparazioni">Riparazioni <button type="button" class="tooltip">i<span>Tutti gli interventi fatti per preparare il mezzo.</span></button></label><input id="riparazioni" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="carburante">Carburante <button type="button" class="tooltip">i<span>Carburante usato per spostamenti, prove o consegna.</span></button></label><input id="carburante" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="altroCosto">Altri costi <button type="button" class="tooltip">i<span>Qualsiasi costo extra non coperto dalle altre voci.</span></button></label><input id="altroCosto" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="saleChannel">Canale vendita <button type="button" class="tooltip">i<span>Segna dove hai concluso o stai portando avanti la vendita.</span></button></label><select id="saleChannel"><option>Subito</option><option>Marketplace</option><option>Passaparola</option><option>Cliente diretto</option><option>Altro</option></select></div>
+          <div><label for="clientLink">Cliente collegato <button type="button" class="tooltip">i<span>Collega la scheda auto a un cliente già registrato.</span></button></label><select id="clientLink"><option value="">Nessuno</option></select></div>
+          <div class="full"><label for="coverUpload">Foto copertina <button type="button" class="tooltip">i<span>Una foto copertina rende più rapida la lettura visiva delle schede.</span></button></label><input id="coverUpload" type="file" accept="image/*"><div class="hint">Una copertina leggera aiuta a riconoscere l'auto. Troppe immagini possono riempire il salvataggio locale.</div></div>
+          <div class="full"><label for="carNotes">Note auto <button type="button" class="tooltip">i<span>Qui metti dettagli utili, difetti, margini, errori da evitare e appunti.</span></button></label><textarea id="carNotes" placeholder="Difetti, lavori fatti, prezzo minimo, stato trattativa, errori da evitare, dettagli importanti"></textarea></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="saveCar">Salva auto</button>
+          <button class="btn secondary" id="resetCar">Svuota</button>
+          <button class="btn secondary" id="closeSaleBtn">Chiudi vendita rapida</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Simulatore acquisto</h3><div class="pill">Prima di comprare</div></div>
+        <div class="form-grid">
+          <div><label for="simBuy">Acquisto <button type="button" class="tooltip">i<span>Importo stimato di acquisto per la simulazione.</span></button></label><input id="simBuy" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simSell">Vendita prevista <button type="button" class="tooltip">i<span>Quanto pensi realistico di incassare dalla vendita.</span></button></label><input id="simSell" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simPass">Passaggio <button type="button" class="tooltip">i<span>Pratiche e costi collegati al trasferimento.</span></button></label><input id="simPass" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simRep">Ripristino <button type="button" class="tooltip">i<span>Quanto pensi di spendere per sistemarla prima della vendita.</span></button></label><input id="simRep" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simExtra">Extra <button type="button" class="tooltip">i<span>Extra vari, imprevisti o costi non classificati.</span></button></label><input id="simExtra" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="simDays">Giorni stimati fermo <button type="button" class="tooltip">i<span>Quanti giorni pensi che l'auto resterà ferma prima di venderla.</span></button></label><input id="simDays" type="number" min="0" step="1" value="20"></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span>Costo totale stimato</span><span class="value-right" id="simTotal">€ 0,00</span></div>
+          <div class="row"><span>Margine stimato</span><span class="value-right" id="simMargin">€ 0,00</span></div>
+          <div class="row"><span>Esito</span><span class="value-right" id="simVerdict">Da valutare</span></div>
+        </div>
+        <div class="toolbar" style="margin-top:14px">
+          <input id="carSearch" type="text" placeholder="Cerca auto, targa, note">
+          <select id="carFilter"><option value="">Tutti gli stati</option><option>Da visionare</option><option>Comprata</option><option>In preparazione</option><option>In vendita</option><option>Venduta</option><option>Consegnata</option></select>
+        </div>
+        <div class="hint">Se il margine stimato è basso o il budget supera il capitale prudente, conviene pensarci due volte.</div>
+      </div>
+    </div>
+    <div class="list" id="carList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="clientsPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>CRM clienti</h3><div class="pill">Trattative</div></div>
+        <div class="form-grid">
+          <div><label for="clientName">Nome cliente <button type="button" class="tooltip">i<span>Nome del cliente o contatto principale.</span></button></label><input id="clientName" type="text" placeholder="Mario Rossi"></div>
+          <div><label for="clientPhone">Telefono <button type="button" class="tooltip">i<span>Numero utile per richiamarlo al momento giusto.</span></button></label><input id="clientPhone" type="tel" placeholder="339..."></div>
+          <div><label for="clientEmail">Email <button type="button" class="tooltip">i<span>Email del cliente se la usi per invio info o documenti.</span></button></label><input id="clientEmail" type="email" placeholder="cliente@email.it"></div>
+          <div><label for="clientBudget">Budget <button type="button" class="tooltip">i<span>Quanto è disposto a spendere secondo quello che ti ha detto.</span></button></label><input id="clientBudget" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="clientInterest">Auto interessata <button type="button" class="tooltip">i<span>Che tipo di auto sta cercando o quale scheda sta seguendo.</span></button></label><input id="clientInterest" type="text" placeholder="Es. Panda, Ibiza, SUV"></div>
+          <div><label for="clientStatus">Stato trattativa <button type="button" class="tooltip">i<span>Serve per capire se è freddo, caldo o già vicino alla chiusura.</span></button></label><select id="clientStatus"><option>Nuovo</option><option>Caldo</option><option>In trattativa</option><option>Appuntamento</option><option>Chiuso</option><option>Perso</option></select></div>
+          <div><label for="clientFollow">Prossimo follow-up <button type="button" class="tooltip">i<span>Data in cui vuoi ricontattarlo.</span></button></label><input id="clientFollow" type="date"></div>
+          <div><label for="clientSource">Provenienza <button type="button" class="tooltip">i<span>Da dove è arrivato il contatto.</span></button></label><select id="clientSource"><option>Subito</option><option>Passaparola</option><option>Instagram</option><option>Marketplace</option><option>Altro</option></select></div>
+          <div class="full"><label for="clientNotes">Note cliente <button type="button" class="tooltip">i<span>Annota cosa vuole, cosa ha detto e la prossima mossa.</span></button></label><textarea id="clientNotes" placeholder="Cosa cerca, cosa ha detto, problemi, prossima mossa"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" id="saveClient">Salva cliente</button><button class="btn secondary" id="resetClient">Svuota</button></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Promemoria clienti</h3><div class="pill">Follow-up</div></div>
+        <div class="list" id="clientReminderList"></div>
+      </div>
+    </div>
+    <div class="list" id="clientList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="deadlinesPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Scadenze e to-do</h3><div class="pill">Niente dimenticanze</div></div>
+        <div class="form-grid">
+          <div><label for="deadlineTitle">Titolo <button type="button" class="tooltip">i<span>Nome breve della scadenza o della cosa da fare.</span></button></label><input id="deadlineTitle" type="text" placeholder="Pagare F24, chiamare cliente, fare foto"></div>
+          <div><label for="deadlineDate">Data <button type="button" class="tooltip">i<span>Data in cui la vuoi chiudere o controllare.</span></button></label><input id="deadlineDate" type="date"></div>
+          <div><label for="deadlineCategory">Categoria <button type="button" class="tooltip">i<span>Ti aiuta a filtrare e capire subito il tipo di impegno.</span></button></label><select id="deadlineCategory"><option>Fiscale</option><option>Auto</option><option>Cliente</option><option>Documento</option><option>Personale</option></select></div>
+          <div><label for="deadlinePriority">Priorità <button type="button" class="tooltip">i<span>Serve a separare ciò che è urgente da ciò che può aspettare.</span></button></label><select id="deadlinePriority"><option>Alta</option><option>Media</option><option>Bassa</option></select></div>
+          <div><label for="deadlineStatus">Stato <button type="button" class="tooltip">i<span>Indica se la scadenza è aperta, in corso o già fatta.</span></button></label><select id="deadlineStatus"><option>Aperta</option><option>In corso</option><option>Fatta</option></select></div>
+          <div><label for="deadlineLink">Collega a <button type="button" class="tooltip">i<span>Collega la voce a un'auto, cliente o documento.</span></button></label><input id="deadlineLink" type="text" placeholder="Targa, cliente, documento"></div>
+          <div class="full"><label for="deadlineNotes">Note <button type="button" class="tooltip">i<span>Dettagli rapidi per non perdere il contesto.</span></button></label><textarea id="deadlineNotes" placeholder="Dettagli utili"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" id="saveDeadline">Salva scadenza</button><button class="btn secondary" id="resetDeadline">Svuota</button></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Scadenze vicine</h3><div class="pill">Occhio</div></div>
+        <div class="list" id="deadlineSoonList"></div>
+      </div>
+    </div>
+    <div class="list" id="deadlineList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="docsPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Archivio documenti</h3><div class="pill">Ordine vero</div></div>
+        <div class="form-grid">
+          <div><label for="docTag">Etichetta <button type="button" class="tooltip">i<span>Etichetta breve per trovare il documento più velocemente.</span></button></label><input id="docTag" type="text" placeholder="Es. Contratto Panda, F24, Bonifico"></div>
+          <div><label for="docType">Tipo <button type="button" class="tooltip">i<span>Tipo documento per avere un archivio più ordinato.</span></button></label><select id="docType"><option>Documento</option><option>Ricevuta</option><option>Fattura</option><option>F24</option><option>Foto</option><option>Altro</option></select></div>
+          <div class="full"><label for="docUpload">Carica file <button type="button" class="tooltip">i<span>Puoi caricare file e leggere un'anteprima testuale quando disponibile.</span></button></label><input id="docUpload" type="file" multiple><div class="hint">L'app salva nome, tipo e anteprima testo quando possibile. Per immagini legge una mini anteprima.</div></div>
+        </div>
+        <div class="actions"><button class="btn secondary" id="clearDocs">Svuota archivio</button></div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Backup dati</h3><div class="pill">Non perdere nulla</div></div>
+        <div class="tablelike">
+          <div class="line"><span>Esporta tutto</span><button class="btn secondary" id="exportJson">Esporta JSON</button></div>
+          <div class="line"><span>Importa backup</span><button class="btn secondary" id="importJsonBtn">Importa JSON</button></div>
+          <div class="line"><span>Esporta CSV auto</span><button class="btn secondary" id="exportCarsCsv">CSV Auto</button></div>
+          <div class="line"><span>Esporta CSV clienti</span><button class="btn secondary" id="exportClientsCsv">CSV Clienti</button></div>
+        </div>
+        <input id="importJson" type="file" accept="application/json" style="display:none">
+      </div>
+    </div>
+    <div class="upload-list" id="docList" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" id="linksPanel">
+    <p class="route-intro">Qui trovi siti utili da controllare per visure, pratiche, documenti, norme, monitoraggio della tua impresa e ricerca del mercato auto.</p>
+    <div class="link-grid">
+      <div class="link-card"><strong>Registro Imprese</strong><div class="small">Dati ufficiali, visure, ricerca imprese</div><div style="margin-top:8px"><a href="https://www.registroimprese.it" target="_blank">https://www.registroimprese.it</a></div></div>
+      <div class="link-card"><strong>Impresa Italia</strong><div class="small">Cassetto digitale impresa e documenti</div><div style="margin-top:8px"><a href="https://impresa.italia.it" target="_blank">https://impresa.italia.it</a></div></div>
+      <div class="link-card"><strong>MIMIT Registro Imprese</strong><div class="small">Quadro istituzionale sul Registro delle imprese</div><div style="margin-top:8px"><a href="https://www.mimit.gov.it/it/impresa/registro-delle-imprese" target="_blank">https://www.mimit.gov.it/it/impresa/registro-delle-imprese</a></div></div>
+      <div class="link-card"><strong>Normattiva</strong><div class="small">Testo della Legge 190/2014 che ha istituito il forfettario</div><div style="margin-top:8px"><a href="https://www.normattiva.it/uri-res/N2Ls?urn%3Anir%3Astato%3Alegge%3A2014%3B190~art1%21vig=" target="_blank">Apri Normattiva</a></div></div>
+      <div class="link-card"><strong>ACI</strong><div class="small">Hub ufficiale, PRA, servizi e mobilità</div><div style="margin-top:8px"><a href="https://www.aci.it" target="_blank">https://www.aci.it</a></div></div>
+      <div class="link-card"><strong>ACI Gov</strong><div class="small">Portale pratiche auto e servizi PRA/STA</div><div style="margin-top:8px"><a href="https://aci.gov.it" target="_blank">https://aci.gov.it</a></div></div>
+      <div class="link-card"><strong>STA</strong><div class="small">Sportello Telematico dell'Automobilista</div><div style="margin-top:8px"><a href="https://aci.gov.it/pratica-auto/lo-sportello-telematico-dellautomobilista-sta/" target="_blank">Apri STA</a></div></div>
+      <div class="link-card"><strong>PRA e pratiche</strong><div class="small">Informazioni su PRA, appuntamenti e pratiche</div><div style="margin-top:8px"><a href="https://up.aci.it/default-province/pubblico-registro-automobilistico-pra-e-pratiche-auto/" target="_blank">Apri PRA</a></div></div>
+      <div class="link-card"><strong>Forniture dati PRA</strong><div class="small">Accesso e forniture dati per esigenze professionali</div><div style="margin-top:8px"><a href="https://aci.gov.it/servizio/fornitura-dati-pra/" target="_blank">Apri servizio</a></div></div>
+      <div class="link-card"><strong>Guida forfettario</strong><div class="small">Approfondimento pratico e aggiornato</div><div style="margin-top:8px"><a href="https://fiscomania.com/regime-forfettario/" target="_blank">Apri guida</a></div></div>
+      <div class="link-card"><strong>Chiarimenti Agenzia</strong><div class="small">Riferimenti alla circolare 32/E e ai chiarimenti</div><div style="margin-top:8px"><a href="https://www.fiscoetasse.com/normativa-prassi/13303-contribuenti-in-regime-forfetario-tutti-i-chiarimenti-dellagenzia.html" target="_blank">Apri riepilogo</a></div></div>
+      <div class="link-card"><strong>Mercato auto</strong><div class="small">Tieni d'occhio portali e comparazione auto usate</div><div style="margin-top:8px"><a href="https://www.aranzulla.it/migliori-siti-auto-usate-1011321.html" target="_blank">Elenco siti auto usate</a></div></div>
+    </div>
+  </section>
+
+  <section class="panel" id="forfPanel">
+    <div class="docs">
+      <div class="doc-box forf"><h4>Forfettario in breve</h4><ul><li>È il tuo regime principale: semplice da gestire, con imposta sostitutiva e niente IVA esposta in fattura.</li><li>Guarda spesso soglia ricavi, coefficiente corretto e differenza tra utile fiscale e margine reale.</li><li>Usa questa sezione breve quando vuoi una lettura veloce, poi sotto trovi la guida lunga e completa.</li></ul><div class="chiprow"><span class="chip forf">Soglia 85.000 €</span><span class="chip forf">Uscita immediata oltre 100.000 €</span><span class="chip forf">Imposta 15% o 5%</span></div></div>
+      <div class="doc-box forf"><h4>Guida completa</h4><ul><li>Il regime forfettario è stato istituito dalla Legge 190/2014, art. 1, commi da 54 a 89, ed è il riferimento normativo da tenere d'occhio quando vuoi capire base legale, requisiti e struttura generale del regime.</li><li>Il reddito imponibile non nasce dalla somma analitica dei costi, ma dall'applicazione del coefficiente di redditività ai ricavi o compensi, quindi il confronto con i tuoi costi reali va sempre fatto separatamente per capire il vero margine della tua attività.</li><li>Per chi opera nel commercio il coefficiente tipico è 40%, mentre per gli intermediari del commercio il coefficiente richiamato è 62%; per questo è importante tenere ben chiaro il codice ATECO usato nella tua attività concreta.</li><li>La soglia ordinaria di permanenza è 85.000 euro di ricavi annui, mentre oltre 100.000 euro la fuoriuscita è immediata e si passa al regime ordinario dall'operazione che determina il superamento.</li><li>L'imposta sostitutiva è in via ordinaria al 15%, con aliquota al 5% nei casi agevolati iniziali previsti; inoltre il regime comporta, in generale, semplificazioni contabili rispetto all'ordinario.</li><li>Nel forfettario, in linea generale, non addebiti IVA in fattura, non scarichi l'IVA come nel regime ordinario e ragioni soprattutto per coefficiente fiscale e contributi deducibili.</li><li>I contributi previdenziali obbligatori sono la voce classica che abbatte la base imponibile prima dell'imposta sostitutiva, quindi nella tua dashboard conviene sempre guardarli insieme ai ricavi.</li><li>Tra le cause e i punti da monitorare ci sono soglia ricavi, eventuale superamento dei limiti, corretto inquadramento dell'attività, e attenzione ai chiarimenti più recenti richiamati dalla circolare 32/E del 2023 dell'Agenzia delle Entrate.</li><li>Per il lavoro quotidiano, però, la cosa più utile è ricordare che il forfettario ti semplifica il lato fiscale ma non sostituisce il controllo manageriale: un'auto può risultare fiscalmente dentro i parametri ma lasciarti poco margine reale se i costi sono saliti troppo.</li><li>Per questo l'app tiene separate la parte fiscale e la parte reale dell'attività: la prima ti dice come gira il regime, la seconda ti dice se stai davvero lavorando bene.</li></ul></div>
+      <div class="doc-box forf"><h4>Cose da tenere d'occhio</h4><ul><li>Controlla spesso quanto manca alla soglia e non aspettare fine anno.</li><li>Confronta sempre ricavo, costo totale reale e margine netto per auto.</li><li>Segna bene ogni spesa, anche se fiscalmente nel forfettario non funziona come l'ordinario, perché ti serve per capire se il business gira davvero.</li><li>Tieni d'occhio i chiarimenti di Agenzia Entrate, Registro Imprese, ACI/PRA e le pratiche auto che possono impattare il lavoro quotidiano.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel" id="ordPanel">
+    <div class="panel-grid">
+      <div class="card" style="border-color:rgba(226,161,44,.34)">
+        <div class="section-title"><h3>Regime ordinario</h3><div class="pill" style="color:var(--warning);border-color:rgba(226,161,44,.34)">Colore separato</div></div>
+        <div class="docs">
+          <div class="doc-box ord"><h4>Come funziona</h4><ul><li>Nell'ordinario il reddito si costruisce in modo analitico: ricavi meno costi effettivi deducibili, se correttamente documentati.</li><li>Entrano in gioco IVA, gestione contabile più articolata e tassazione progressiva IRPEF per le persone fisiche.</li><li>Questo regime è più complesso, ma in certi casi riflette meglio i costi reali dell'attività.</li></ul></div>
+          <div class="doc-box ord"><h4>Cosa cambia rispetto al forfettario</h4><ul><li>Nel forfettario usi coefficiente e imposta sostitutiva; nell'ordinario ragioni su costi veri, IVA e tassazione progressiva.</li><li>Se hai molti costi documentati, l'ordinario può risultare più aderente alla realtà economica dell'attività.</li><li>Di contro richiede più ordine contabile, più adempimenti e più attenzione continua.</li></ul></div>
+          <div class="doc-box ord"><h4>Quando guardarlo davvero</h4><ul><li>Quando i costi reali diventano pesanti e vuoi capire se il forfettario ti sta ancora convenendo.</li><li>Quando vuoi simulare quanta IVA teorica avresti gestito e quale sarebbe stata la base imponibile analitica.</li><li>Quando vuoi una fotografia organizzata delle spese reali del business, separate dal calcolo forfettario.</li></ul></div>
+        </div>
+      </div>
+      <div class="card" style="border-color:rgba(226,161,44,.34)">
+        <div class="section-title"><h3>Simulatore ordinario</h3><div class="pill" style="color:var(--warning);border-color:rgba(226,161,44,.34)">Stima semplificata</div></div>
+        <div class="form-grid">
+          <div><label for="ordVatSales">IVA vendite %</label><input id="ordVatSales" type="number" min="0" max="100" step="0.01" value="22"></div>
+          <div><label for="ordVatCosts">IVA costi %</label><input id="ordVatCosts" type="number" min="0" max="100" step="0.01" value="22"></div>
+          <div><label for="ordDeductExtra">Altri costi deducibili</label><input id="ordDeductExtra" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="ordIrpefRate">IRPEF media stimata %</label><input id="ordIrpefRate" type="number" min="0" max="100" step="0.01" value="23"></div>
+        </div>
+        <div class="hint">Questa è una stima pratica e semplificata per capire come si sarebbero mossi costi, IVA e base imponibile in ordinario, non un calcolo fiscale definitivo.</div>
+        <div class="stats" style="margin-top:14px">
+          <div class="ord-kpi"><div class="label">Ricavi ordinario</div><div class="value" id="ordRicavi">€ 0,00</div></div>
+          <div class="ord-kpi"><div class="label">Costi deducibili</div><div class="value" id="ordCosti">€ 0,00</div></div>
+          <div class="ord-kpi"><div class="label">IVA vendite</div><div class="value" id="ordIvaVendite">€ 0,00</div></div>
+          <div class="ord-kpi"><div class="label">IVA costi</div><div class="value" id="ordIvaCosti">€ 0,00</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span>Saldo IVA teorico</span><span class="value-right" id="ordSaldoIva">€ 0,00</span></div>
+          <div class="row"><span>Reddito analitico</span><span class="value-right" id="ordReddito">€ 0,00</span></div>
+          <div class="row"><span>IRPEF stimata</span><span class="value-right" id="ordIrpef">€ 0,00</span></div>
+          <div class="row"><span>Risultato dopo stima</span><span class="value-right" id="ordNetto">€ 0,00</span></div>
+        </div>
+        <div class="docs" style="margin-top:14px">
+          <div class="doc-box ord"><h4>Lettura pratica</h4><ul><li>Qui vedi come i tuoi costi reali peserebbero in un assetto ordinario.</li><li>È utile per confrontare mentalmente il tuo regime attuale con uno scenario più analitico.</li><li>Usalo come cruscotto di confronto, non come sostituto della contabilità vera.</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="advicePanel">
+    <div class="docs">
+      <div class="doc-box"><h4>Controlli settimanali</h4><ul><li>Guarda capitale riutilizzabile prima di comprare un'altra auto.</li><li>Controlla quali auto stanno ferme da troppi giorni.</li><li>Aggiorna subito stato, data vendita e cliente appena chiudi una trattativa.</li></ul></div>
+      <div class="doc-box"><h4>Trucchetti utili</h4><ul><li>Non guardare solo il prezzo di acquisto: valuta sempre il costo totale reale.</li><li>Imposta un prezzo minimo e uno obiettivo per evitare trattative improvvisate.</li><li>Se un modello ti lascia poco margine più volte, smetti di inseguirlo.</li></ul></div>
+      <div class="doc-box"><h4>Documenti da tenere bene</h4><ul><li>Bonifici, ricevute, F24, passaggi, fatture, foto, accordi cliente e note.</li><li>Usa tag chiari nei documenti così trovi tutto più in fretta.</li><li>Fai backup periodico in JSON e salvalo fuori dall'app.</li></ul></div>
+      <div class="doc-box"><h4>Errori da evitare</h4><ul><li>Bloccare troppo capitale su un'auto sola.</li><li>Dimenticare costi piccoli che alla fine mangiano il margine.</li><li>Non segnare follow-up cliente e perdere vendite già calde.</li></ul></div>
+      <div class="doc-box"><h4>Come usare l'app bene</h4><ul><li>Home per decidere velocemente.</li><li>Auto per margini, storico e operatività.</li><li>Clienti e scadenze per non perdere trattative e impegni.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="panel" id="aiPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Assistente interno gratuito</h3><div class="pill">Sui tuoi dati</div></div>
+        <div class="hint">Questo assistente lavora con i dati della mini app, le note e il testo leggibile dei documenti caricati. È pensato per consigli pratici, riassunti e supporto operativo.</div>
+        <div class="form-grid" style="margin-top:12px">
+          <div class="full"><label for="aiQuestion">Domanda <button type="button" class="tooltip">i<span>Scrivi qui la domanda operativa che vuoi fare all'assistente.</span></button></label><textarea id="aiQuestion" placeholder="Es. Quanto posso reinvestire? Qual è la mia auto peggiore? Su cosa devo concentrarmi oggi?"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" id="askAi">Chiedi</button><button class="btn secondary" id="copyPrompt">Copia prompt avanzato</button></div>
+        <div class="ai-answer" id="aiAnswer">Qui comparirà la risposta dell'assistente.</div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Domande utili</h3><div class="pill">Esempi</div></div>
+        <div class="docs">
+          <div class="doc-box"><h4>Operatività</h4><ul><li>Quanto posso reinvestire senza rischiare troppo?</li><li>Quali auto mi stanno bloccando capitale?</li><li>Quale cliente devo ricontattare oggi?</li></ul></div>
+          <div class="doc-box"><h4>Margini</h4><ul><li>Qual è la mia auto più redditizia?</li><li>Quali costi mi stanno pesando di più?</li><li>Su quali canali vendo meglio?</li></ul></div>
+          <div class="doc-box"><h4>Controllo</h4><ul><li>Sono vicino alla soglia?</li><li>Quali scadenze devo guardare subito?</li><li>Riassumimi la situazione attuale in modo semplice.</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="settingsPanel">
+    <div class="panel-grid">
+      <div class="card">
+        <div class="section-title"><h3>Impostazioni attività</h3><div class="pill">Dati base</div></div>
+        <div class="form-grid">
+          <div><label for="capitaleIniziale">Capitale iniziale <button type="button" class="tooltip">i<span>Il capitale con cui parti per comprare e far girare le prime auto.</span></button></label><input id="capitaleIniziale" type="number" min="0" step="0.01" value="5000"></div>
+          <div><label for="speseCommercialista">Spese commercialista <button type="button" class="tooltip">i<span>Usala se vuoi includere questa voce nei costi reali annuali.</span></button></label><input id="speseCommercialista" type="number" min="0" step="0.01" value="0"></div>
+          <div><label for="dataApertura">Data apertura <button type="button" class="tooltip">i<span>Ti aiuta a tenere memoria dell'avvio attività.</span></button></label><input id="dataApertura" type="date"></div>
+          <div><label for="partitaIva">Partita IVA <button type="button" class="tooltip">i<span>Numero di partita IVA dell'attività.</span></button></label><input id="partitaIva" type="text" placeholder="Inserisci partita IVA"></div>
+          <div><label for="ragioneSociale">Nome attività <button type="button" class="tooltip">i<span>Nome che vuoi usare come intestazione interna nell'app.</span></button></label><input id="ragioneSociale" type="text" placeholder="AutoBroskiGroup"></div>
+          <div><label for="ateco">Codice ATECO <button type="button" class="tooltip">i<span>Codice attività utile anche per il ragionamento fiscale.</span></button></label><input id="ateco" type="text" placeholder="Es. 45.11.02"></div>
+          <div><label for="email">Email <button type="button" class="tooltip">i<span>Email principale dell'attività.</span></button></label><input id="email" type="email" placeholder="info@..." /></div>
+          <div><label for="pec">PEC <button type="button" class="tooltip">i<span>PEC ufficiale per comunicazioni formali.</span></button></label><input id="pec" type="email" placeholder="...@pec.it" /></div>
+          <div><label for="telefono">Telefono <button type="button" class="tooltip">i<span>Numero da associare all'attività.</span></button></label><input id="telefono" type="tel" placeholder="339..." /></div>
+          <div><label for="coeff">Coeff. redditività <button type="button" class="tooltip">i<span>Percentuale usata nel calcolo del reddito forfettario.</span></button></label><input id="coeff" type="number" min="1" max="100" step="0.01" value="40"></div>
+          <div><label for="aliquotaImposta">Imposta sostitutiva <button type="button" class="tooltip">i<span>Aliquota del regime forfettario che vuoi usare nei calcoli.</span></button></label><select id="aliquotaImposta"><option value="5">5%</option><option value="15" selected>15%</option></select></div>
+          <div><label for="tipoInps">Tipo INPS <button type="button" class="tooltip">i<span>Serve per la simulazione contributiva interna della dashboard.</span></button></label><select id="tipoInps"><option value="commercianti" selected>Commercianti</option><option value="artigiani">Artigiani</option><option value="zero">Nessun calcolo</option></select></div>
+          <div><label for="riduzione35">Riduzione 35% <button type="button" class="tooltip">i<span>Riduzione contributiva applicabile nei casi previsti.</span></button></label><select id="riduzione35"><option value="no" selected>No</option><option value="si">Sì</option></select></div>
+          <div class="full"><label for="noteAttivita">Note attività <button type="button" class="tooltip">i<span>Regole personali, promemoria e informazioni importanti dell'attività.</span></button></label><textarea id="noteAttivita" placeholder="Regole personali, banca, conto dedicato, promemoria utili"></textarea></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title"><h3>Funzioni utili</h3><div class="pill">Extra</div></div>
+        <div class="tablelike">
+          <div class="line"><span>Azzerare tutti i dati</span><button class="btn danger" id="wipeAll">Reset totale</button></div>
+          <div class="line"><span>Salvataggio locale</span><span class="small">Automatico nel browser</span></div>
+          <div class="line"><span>Tema</span><span class="small">Luna / sole in alto</span></div>
+          <div class="line"><span>Assistente</span><span class="small">Usa dati app + documenti</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</aside>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="script.js" defer></script>
+</body>
+</html>
